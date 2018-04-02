@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="primary">#3385d9</color>
+    <color name="primary_dark">#E12929</color>
+    <color name="primary_darker">#CC1D1D</color>
+    <color name="primary_lighter">#3df83f1d</color>
+
+    <color name="accent">#FFFFFF</color>
+
+    <color name="black">#000000</color>
+    <color name="jet">#222222</color>
+    <color name="oil">#333333</color>
+    <color name="monsoon">#777777</color>
+    <color name="jumbo">#888888</color>
+    <color name="aluminum">#999999</color>
+    <color name="base">#ffffff</color>
+    <color name="iron">#CCCCCC</color>
+    <color name="white">#FFFFFF</color>
+    <color name="bgcolorLogin">#1e50f4</color>
+    <color name="snackbar_color">#59fa8c</color>
+    <color name="btn_bg">#f83f1d</color>
+    <color name="btn_text_color">#f83f1d</color>
+    <color name="toolbar_text">#fff</color>
+    <drawable name="touchFeedback">#CFD8DC</drawable>
+    <color name="layout_border_color">#9c9c9c</color>
+    <color name="measure_button">#f83f1d</color>
+    <color name="ble_connected">#00ff00</color>
+    <color name="battery_color">#ff5001</color>
+    <color name="error">#ff0000</color>
+    <color name="ble_disconnected">#ff0000</color>
+    <color name="measuring">#00ff00</color>
+    <color name="green">#00ff00</color>
+    <color name="ble_device_name">#000000</color>
+    <color name="ble_device_address">#ff5001</color>
+    <color name="scan_result_list_title">#1e50f4</color>
+    <color name="divider">#999999</color>
+    <color name="darker_gray">#aaaaaa</color>
+    <color name="ff5001">#ff5001</color>
+    <color name="table_title">#48f59c</color>
+    <color name="blue_2196f3">#2196f3</color>
+    <color name="measurement_list_bg">#ddd</color>
+    <color name="dfdfdf">#dfdfdf</color>
+    <color name="c333">#333333</color>
+    <color name="ff0000">#ff0000</color>
+    <color name="eee">#eeeeee</color>
+    <color name="unmeasured">#d5010e</color>
+    <color name="measured">#0d8606</color>
+    <color name="modifying">#ff9f00</color>
+    <color name="ddd">#dddddd</color>
+    <color name="c252527">#252527</color>
+    <color name="e24600">#e24600</color>
+    <color name="c393a3a">#393a3a</color>
+    <color name="e8e8e8">#e8e8e8</color>
+    <color name="c434446">#434446</color>
+    <!--QRCode scanner color begin-->
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="result_view">#B0000000</color>
+    <color name="viewfinder_frame">#90FFFFFF</color>
+    <color name="result_point_color">#C0FFFF00</color>
+    <color name="laser_color">#3385D9</color>
+    <color name="corner_color">#fff</color>
+    <color name="scan_label_color">#fff</color>
+    <color name="scan_input_color">#fff</color>
+    <color name="c999">#999999</color>
+    <color name="ccc">#cccccc</color>
+</resources>
