@@ -50,7 +50,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
     private Boolean haveUsbHostApi = false;
     private String deviceNode;//USB设备名称
-    HashMap<String, UsbDevice> deviceList;
+    private HashMap<String, UsbDevice> deviceList;
 
     private int deviceHandle = -1;
     private Handler mHandler = null;
@@ -64,8 +64,6 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     private EditText displayCode;
     private Boolean flag = false;
     private UsbListenerBroadcast usbListenerBroadcast;
-
-//    private List<QualityData.Parts> partses = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -238,55 +236,46 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     public void returnGetQualityData(QualityData qualityData) {
         Log.e("succeed", "succeed");
         if (qualityData != null) {
-            List<QualityData.Parts> mlist = qualityData.getParts();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("qualityData", qualityData);
-            Intent intent = new Intent(LotusCardDemoActivity.this, QualityActivity.class);
-            intent.putExtra("quality", bundle);
-            startActivity(intent);
+            ArrayList<QualityData.Parts> mlist = qualityData.getParts();
 
-//            QualityActivity.startActivity(mContext,qualityData);
-
-//            if (mlist.size() > 0) {
-//                String s = JSON.toJSONString(qualityData);
-//                Log.e("TAG1", s);
-////                QualityActivity.startActivity(mContext,s);
+            if (mlist.size() > 0) {
 //                startQualityControl(mlist);
-            }else {
+                QualityActivity.startActivity(mContext, mlist);
+            } else {
                 ToastUtil.showShort("无对应的数据!");
             }
+        }
     }
 
-    private void startQualityControl(List<QualityData.Parts> mlist) {
-        String name;
-        int value = 0;
-        List<String> gravity = new ArrayList<>();
-        List<Integer> unit = new ArrayList<>();
-        for (QualityData.Parts p : mlist) {
-            gravity.add(p.getName());
-        }
-        Log.e("TAG2", gravity.toString());
-        for (int i=0;i<mlist.size();i++) {
-            name = gravity.get(i);
-            Log.e("TAG3", name);
-        }
-
-        for (QualityData.Parts p : mlist) {
-            unit.add(p.getValue());
-        }
-        Log.e("TAG2", unit.toString());
-        for (int i=0;i<mlist.size();i++) {
-            value = unit.get(i);
-            Log.e("TAG3", String.valueOf(value));
-        }
-
-
-        int grivatyCount = gravity.size();//获取数组的个数 等于集合的个数
-        String[] grivatyValue = gravity.toArray(new String[grivatyCount]);//把集合转化成数组
-
-//        QualityActivity.startActivity(mContext,grivatyValue,value);
-    }
-
+//    private void startQualityControl(List<QualityData.Parts> mlist) {
+//        String name;
+//        int value = 0;
+//        List<String> gravity = new ArrayList<>();
+//        List<Integer> unit = new ArrayList<>();
+//        for (QualityData.Parts p : mlist) {
+//            gravity.add(p.getName());
+//        }
+//        Log.e("TAG2", gravity.toString());
+//        for (int i=0;i<mlist.size();i++) {
+//            name = gravity.get(i);
+//            Log.e("TAG3", name);
+//        }
+//
+//        for (QualityData.Parts p : mlist) {
+//            unit.add(p.getValue());
+//        }
+//        Log.e("TAG2", unit.toString());
+//        for (int i=0;i<mlist.size();i++) {
+//            value = unit.get(i);
+//            Log.e("TAG3", String.valueOf(value));
+//        }
+//
+//
+//        int grivatyCount = gravity.size();//获取数组的个数 等于集合的个数
+//        String[] grivatyValue = gravity.toArray(new String[grivatyCount]);//把集合转化成数组
+//
+////        QualityActivity.startActivity(mContext,grivatyValue,value);
+//    }
 
     //子线程
     public class CardOperateThread implements Runnable {
@@ -300,7 +289,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
             while (true) {//使得线程循环
                 if (flag) {//是否暂停
                     // FIXME: 2018/4/1 0001 线程运行速度变慢了好多
-                    Log.e("test===",String.valueOf(n++));
+//                    Log.e("test===",String.valueOf(n++));
                     try {
                         nRequestType = LotusCardDriver.RT_NOT_HALT;//未进入休眠的卡
                         bResult = mLotusCardDriver.GetCardNo(deviceHandle, nRequestType, tLotusCardParam1);//获取卡号，true表示成功

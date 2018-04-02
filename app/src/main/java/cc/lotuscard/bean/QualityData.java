@@ -23,7 +23,25 @@ public class QualityData implements Parcelable {
     private String id;
     private String category;
     private String type;
-    private List<Parts> parts;
+    private ArrayList<Parts> parts;
+
+    protected QualityData(Parcel in) {
+        id = in.readString();
+        category = in.readString();
+        type = in.readString();
+    }
+
+    public static final Creator<QualityData> CREATOR = new Creator<QualityData>() {
+        @Override
+        public QualityData createFromParcel(Parcel in) {
+            return new QualityData(in);
+        }
+
+        @Override
+        public QualityData[] newArray(int size) {
+            return new QualityData[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -49,15 +67,27 @@ public class QualityData implements Parcelable {
         this.type = type;
     }
 
-    public List<Parts> getParts() {
+    public ArrayList<Parts> getParts() {
         return parts;
     }
 
-    public void setParts(List<Parts> parts) {
+    public void setParts(ArrayList<Parts> parts) {
         this.parts = parts;
     }
 
-    public static class Parts {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(category);
+        dest.writeString(type);
+    }
+
+    public static class Parts implements Parcelable{
         /**
          * name : 林秀兰
          * value : 28
@@ -81,41 +111,37 @@ public class QualityData implements Parcelable {
         public void setValue(int value) {
             this.value = value;
         }
-    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.category);
-        dest.writeString(this.type);
-        dest.writeList(this.parts);
-    }
-
-    public QualityData() {
-    }
-
-    protected QualityData(Parcel in) {
-        this.id = in.readString();
-        this.category = in.readString();
-        this.type = in.readString();
-        this.parts = new ArrayList<Parts>();
-        in.readList(this.parts, Parts.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<QualityData> CREATOR = new Parcelable.Creator<QualityData>() {
         @Override
-        public QualityData createFromParcel(Parcel source) {
-            return new QualityData(source);
+        public int describeContents() {
+            return 0;
         }
 
         @Override
-        public QualityData[] newArray(int size) {
-            return new QualityData[size];
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.name);
+            dest.writeInt(this.value);
         }
-    };
+
+        public Parts() {
+        }
+
+        protected Parts(Parcel in) {
+            this.name = in.readString();
+            this.value = in.readInt();
+        }
+
+        public static final Creator<Parts> CREATOR = new Creator<Parts>() {
+            @Override
+            public Parts createFromParcel(Parcel source) {
+                return new Parts(source);
+            }
+
+            @Override
+            public Parts[] newArray(int size) {
+                return new Parts[size];
+            }
+        };
+    }
+
 }

@@ -2,7 +2,6 @@ package cc.lotuscard.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,7 +14,6 @@ import com.jaydenxiao.common.base.BaseActivity;
 import com.jaydenxiao.common.commonutils.ToastUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -32,29 +30,15 @@ public class QualityActivity extends BaseActivity {
     @Bind(R.id.irc_quality_data)
     IRecyclerView irc;
 
-    CommonRecycleViewAdapter<String> adapter;
-    List<String> nameList = new ArrayList<>();
+    CommonRecycleViewAdapter<QualityData.Parts> adapter;
     List<QualityData.Parts> partses = new ArrayList<>();
 
-//    public static void startActivity(Context mContext, String[] name,int value) {
-//        Intent intent = new Intent(mContext, QualityActivity.class);
-//        intent.putExtra(AppConstant.QUALITY_DATA, name);
-//        intent.putExtra(AppConstant.QUALITY_DATA2, value);
-//        mContext.startActivity(intent);
-//    }
-
-    public static void startActivity(Context mContext, QualityData value) {
+    public static void startActivity(Context mContext, ArrayList<QualityData.Parts> partses) {
         Intent intent = new Intent(mContext, QualityActivity.class);
-//        intent.putExtra(AppConstant.QUALITY_DATA, name);
-        intent.putExtra(AppConstant.QUALITY_DATA2, value);
+        intent.putExtra(AppConstant.QUALITY_DATA, partses);
         mContext.startActivity(intent);
     }
 
-//    public static void startActivity(Context mContext, String qualityData) {
-//        Intent intent = new Intent(mContext, QualityActivity.class);
-//        intent.putExtra(AppConstant.QUALITY_DATA, qualityData);
-//        mContext.startActivity(intent);
-//    }
 
     @Override
     public int getLayoutId() {
@@ -67,47 +51,19 @@ public class QualityActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
     public void initView() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
-        partses = getIntent().getParcelableExtra(AppConstant.QUALITY_DATA);
-        final String[] names = getIntent().getStringArrayExtra(AppConstant.QUALITY_DATA);
-        nameList = Arrays.asList(names);
-        adapter = new CommonRecycleViewAdapter<String>(this,R.layout.item_quality,nameList) {
+        partses = getIntent().getParcelableArrayListExtra(AppConstant.QUALITY_DATA);
+//        LogUtils.loge("hahaha=="+partses.get(0).getName());
+        adapter = new CommonRecycleViewAdapter<QualityData.Parts>(this,R.layout.item_quality,partses) {
             @Override
-            public void convert(ViewHolderHelper helper, String s) {
+            public void convert(ViewHolderHelper helper, QualityData.Parts parts) {
                 TextView gravity1 = helper.getView(R.id.gravity);
                 TextView unit1 = helper.getView(R.id.unit);
 
-                gravity1.setText(s);
-
+                gravity1.setText(parts.getName());
+                unit1.setText(String.valueOf(parts.getValue()));
             }
-
-//            @Override
-//            public void convert(ViewHolderHelper helper, QualityData.Parts parts) {
-//
-//                TextView gravity1 = helper.getView(R.id.gravity);
-//                TextView unit1 = helper.getView(R.id.unit);
-//
-//                String name = null;
-//                List<String> gravity = new ArrayList<>();
-//                List<String> unit = new ArrayList<>();
-//                for (QualityData.Parts p : partses) {
-//                    gravity.add(p.getName());
-//                }
-//                Log.e("TAG2", gravity.toString());
-//                for (int i=0;i<partses.size();i++) {
-//                    name = gravity.get(i);
-//                    Log.e("TAG3", name);
-//                }
-//                gravity1.setText(name);
-//                unit1.setText(parts.getValue());
-//            }
         };
         irc.setAdapter(adapter);
         irc.setLayoutManager(new LinearLayoutManager(this));
