@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 
+
 import com.jaydenxiao.common.BuildConfig;
 import com.jaydenxiao.common.R;
 import com.jaydenxiao.common.baseapp.AppManager;
@@ -19,7 +20,6 @@ import com.jaydenxiao.common.commonutils.ToastUtil;
 import com.jaydenxiao.common.commonwidget.LoadingDialog;
 import com.jaydenxiao.common.commonwidget.StatusBarCompat;
 import com.jaydenxiao.common.daynightmodeutils.ChangeModeController;
-import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
 
@@ -98,9 +98,9 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
         // 无标题
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         // 设置竖屏
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // 设置横屏
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         // 默认着色状态栏
         SetStatusBarColor();
 
@@ -253,7 +253,7 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
         //debug版本不统计crash
         if(!BuildConfig.LOG_DEBUG) {
             //友盟统计
-            MobclickAgent.onResume(this);
+//            MobclickAgent.onResume(this);
         }
     }
 
@@ -263,7 +263,7 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
         //debug版本不统计crash
         if(!BuildConfig.LOG_DEBUG) {
             //友盟统计
-            MobclickAgent.onPause(this);
+//            MobclickAgent.onPause(this);
         }
     }
 

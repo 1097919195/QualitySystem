@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -114,7 +115,18 @@
                 android:background="@drawable/linelayout"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
-                android:text="偏差"
+                android:text="质检数据"
+                android:textAlignment="center"
+                android:textColor="@color/primary" />
+            <android.support.v7.widget.AppCompatTextView
+                android:textSize="@dimen/font_large"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/linelayout"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="当前测量"
                 android:textAlignment="center"
                 android:textColor="@color/ff0000" />
         </LinearLayout>
@@ -123,7 +135,9 @@
     <com.aspsine.irecyclerview.IRecyclerView
         android:id="@+id/irc_quality_data"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:loadMoreEnabled="false"
+        app:refreshEnabled="false">
 
     </com.aspsine.irecyclerview.IRecyclerView>
 

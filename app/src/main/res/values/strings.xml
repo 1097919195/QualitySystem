@@ -200,6 +200,7 @@
     <string name="ble_disabled">蓝牙未打开</string>
     <string name="can_open_ble">是否打开蓝牙</string>
     <string name="open">打开</string>
+    <string name="cancel">取消</string>
     <string name="unauthorized_location">未授予位置信息权限</string>
     <string name="code_input_type">编码获取方式</string>
     <string name="code_input_hint">待质检服装的编号可选择手动输入或者扫描二维码获取</string>

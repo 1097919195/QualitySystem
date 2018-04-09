@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 public  class PageBean implements Parcelable {
     private int page=0;
-    private int rows=10;
+    private int rows=20;
     private int totalCount;
     private int totalPage;
     private boolean refresh=true;

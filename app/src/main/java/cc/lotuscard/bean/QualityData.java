@@ -87,14 +87,15 @@ public class QualityData implements Parcelable {
         dest.writeString(type);
     }
 
-    public static class Parts implements Parcelable{
+    public static class Parts implements Parcelable {
         /**
          * name : 林秀兰
          * value : 28
          */
 
         private String name;
-        private int value;
+        private float oriValue;
+        private float actValue;
 
         public String getName() {
             return name;
@@ -104,13 +105,22 @@ public class QualityData implements Parcelable {
             this.name = name;
         }
 
-        public int getValue() {
-            return value;
+        public float getOriValue() {
+            return oriValue;
         }
 
-        public void setValue(int value) {
-            this.value = value;
+        public void setOriValue(float oriValue) {
+            this.oriValue = oriValue;
         }
+
+        public float getActValue() {
+            return actValue;
+        }
+
+        public void setActValue(float actValue) {
+            this.actValue = actValue;
+        }
+
 
         @Override
         public int describeContents() {
@@ -120,7 +130,8 @@ public class QualityData implements Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.name);
-            dest.writeInt(this.value);
+            dest.writeFloat(this.oriValue);
+            dest.writeFloat(this.actValue);
         }
 
         public Parts() {
@@ -128,7 +139,8 @@ public class QualityData implements Parcelable {
 
         protected Parts(Parcel in) {
             this.name = in.readString();
-            this.value = in.readInt();
+            this.oriValue = in.readFloat();
+            this.actValue = in.readFloat();
         }
 
         public static final Creator<Parts> CREATOR = new Creator<Parts>() {

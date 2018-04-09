@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyLineLayoutBg">
+        <attr name="unMeasure" format="boolean"/>
+        <attr name="unMeasureColor" format="integer"/>
+    </declare-styleable>
+</resources>

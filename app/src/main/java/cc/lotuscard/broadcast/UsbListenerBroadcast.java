@@ -1,4 +1,4 @@
-package cc.lotuscard.ui.broadcast;
+package cc.lotuscard.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

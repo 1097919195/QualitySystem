@@ -2,26 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/bleState"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ble_disconnected"/>
 
     <TextView
         android:id="@+id/tvDeviceNode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Device Node:"
-        android:textSize="@dimen/font_normal3" />
+        android:textSize="@dimen/font_large" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="bottom"
+        android:gravity="center"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/displayCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/font_normal3"
+            android:textSize="@dimen/font_large"
             android:text="这里显示卡号"/>
 
         <EditText

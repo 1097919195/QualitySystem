@@ -7,9 +7,26 @@
         android:required="true" />
     <uses-feature android:name="android.hardware.usb.accessory" />
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:maxSdkVersion="22" />
 
     <application
         android:name="cc.lotuscard.app.AppApplication"
@@ -20,7 +37,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="cc.lotuscard.ui.activity.LotusCardDemoActivity"
+            android:name="cc.lotuscard.activity.LotusCardDemoActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
@@ -40,12 +57,12 @@
                 android:resource="@xml/device_filter" />
         </activity>
         <activity
-            android:name="cc.lotuscard.ui.activity.QualityActivity"
+            android:name="cc.lotuscard.activity.CheckActivity"
             android:launchMode="singleTask">
 
         </activity>
 
-        <receiver android:name="cc.lotuscard.ui.broadcast.UsbListenerBroadcast" />
+        <receiver android:name="cc.lotuscard.broadcast.UsbListenerBroadcast" />
     </application>
 
 </manifest>
