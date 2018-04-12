@@ -4,13 +4,13 @@ package cc.lotuscard.api;
 import java.util.List;
 
 import cc.lotuscard.bean.QualityData;
+import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
-import rx.Observable;
 
 /**
  * des:ApiService

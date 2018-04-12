@@ -4,12 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.jaydenxiao.common.base.BaseModel;
 import com.jaydenxiao.common.base.BasePresenter;
 import com.jaydenxiao.common.base.BaseView;
-import com.polidea.rxandroidble.RxBleConnection;
 
 import java.util.UUID;
 
 import cc.lotuscard.bean.QualityData;
-import rx.Observable;
+import io.reactivex.Observable;
+
 
 /**
  * Created by Administrator on 2018/4/4 0004.

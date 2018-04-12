@@ -1,31 +1,25 @@
 package cc.lotuscard.model;
 
-import com.alibaba.fastjson.JSONArray;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.jaydenxiao.common.baserx.RxSchedulers;
-import com.jaydenxiao.common.commonutils.LogUtils;
-import com.polidea.rxandroidble.RxBleClient;
-import com.polidea.rxandroidble.RxBleConnection;
-import com.polidea.rxandroidble.RxBleDevice;
-import com.polidea.rxandroidble.RxBleDeviceServices;
-import com.polidea.rxandroidble.scan.ScanFilter;
-import com.polidea.rxandroidble.scan.ScanResult;
-import com.polidea.rxandroidble.scan.ScanSettings;
+import android.bluetooth.BluetoothGattCharacteristic;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.jaydenxiao.common.baserx.RxSchedulers;
+
+import com.polidea.rxandroidble2.RxBleClient;
+import com.polidea.rxandroidble2.RxBleConnection;
+import com.polidea.rxandroidble2.RxBleDeviceServices;
+import com.polidea.rxandroidble2.scan.ScanFilter;
+import com.polidea.rxandroidble2.scan.ScanResult;
+import com.polidea.rxandroidble2.scan.ScanSettings;
 
 import cc.lotuscard.api.Api;
 import cc.lotuscard.api.HostType;
 import cc.lotuscard.app.AppApplication;
-import cc.lotuscard.bean.BleDevice;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.contract.QualityContract;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.functions.Func1;
+
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+
 
 /**
  * Created by Administrator on 2018/3/28 0028.
@@ -66,11 +60,12 @@ public class QualityModel implements QualityContract.Model {
     }
 
     @Override
-    public Observable<RxBleDeviceServices> chooseDeviceConnect(String mac) {
-        return rxBleClient.getBleDevice(mac)
-                .establishConnection(false)
-                .flatMap(RxBleConnection::discoverServices)
-                .first() // Disconnect automatically after discovery
-                .compose(RxSchedulers.<RxBleDeviceServices>io_main());
+    public Maybe<RxBleDeviceServices> chooseDeviceConnect(String mac) {
+         return rxBleClient.getBleDevice(mac)
+                .establishConnection(false) //autoConnect flag布尔值：是否直接连接到远程设备（false）或在远程设备变为可用时立即自动连接
+                .flatMapSingle(RxBleConnection::discoverServices)
+                .firstElement() // Disconnect automatically after discovery
+                .compose(RxSchedulers.<RxBleDeviceServices>io_main_maybe());
     }
+
 }

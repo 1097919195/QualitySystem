@@ -22,9 +22,9 @@ import com.jaydenxiao.common.baserx.RxBus;
 import com.jaydenxiao.common.commonutils.LogUtils;
 import com.jaydenxiao.common.commonutils.SPUtils;
 import com.jaydenxiao.common.commonutils.ToastUtil;
-import com.polidea.rxandroidble.RxBleClient;
-import com.polidea.rxandroidble.RxBleConnection;
-import com.polidea.rxandroidble.RxBleDevice;
+import com.polidea.rxandroidble2.RxBleClient;
+import com.polidea.rxandroidble2.RxBleConnection;
+import com.polidea.rxandroidble2.RxBleDevice;
 
 import org.w3c.dom.Text;
 
@@ -43,7 +43,6 @@ import cc.lotuscard.presenter.CheckPresenter;
 import cc.lotuscard.utils.HexString;
 import cc.lotuscard.widget.MeasureStateEnum;
 import cc.lotuscard.widget.MyLineLayout;
-import rx.functions.Action1;
 
 /**
  * Created by Administrator on 2018/3/29 0029.
@@ -64,6 +63,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     boolean remuasure = false;
     String mac = SPUtils.getSharedStringData(AppApplication.getAppContext(), AppConstant.MAC_ADDRESS);
     UUID characteristicUUID = UUID.fromString(SPUtils.getSharedStringData(AppApplication.getAppContext(), AppConstant.UUID));
+    List<Integer> canRemeasureData = new ArrayList<>();
 
     public static void startActivity(Context mContext, ArrayList<QualityData.Parts> partses) {
         Intent intent = new Intent(mContext, CheckActivity.class);
@@ -95,6 +95,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         itemClickRemeasure();
         initMeasure();
 
+        // FIXME: 2018/4/12 0012 状态检测
         RxBleClient rxBleClient = AppApplication.getRxBleClient(this);
         RxBleDevice rxBleDevice = rxBleClient.getBleDevice(mac);
         RxBleConnection.RxBleConnectionState kkk = rxBleDevice.getConnectionState();
@@ -169,15 +170,20 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                ToastUtil.showShort(String.valueOf(position));
-                itemPostion = position;
-                remuasure = true;
-                partses.get(itemPostionAgo).setSelected(false);
-                if(unMeasuredCounts!=0)
-                    partses.get(measuredCounts-unMeasuredCounts).setSelected(false);
-                partses.get(itemPostion).setSelected(true);
-                adapter.notifyDataSetChanged();
-                itemPostionAgo = itemPostion;
+//                ToastUtil.showShort(String.valueOf(position));
+                if (canRemeasureData.size() > position) {
+                    itemPostion = position;
+                    remuasure = true;
+                    partses.get(itemPostionAgo).setSelected(false);
+                    if(unMeasuredCounts!=0)
+                        partses.get(measuredCounts-unMeasuredCounts).setSelected(false);
+                    partses.get(itemPostion).setSelected(true);
+                    adapter.notifyDataSetChanged();
+                    itemPostionAgo = itemPostion;
+                }else {
+                    ToastUtil.showShort("请先按顺序完成第一次测量");
+                }
+
             }
 
             @Override
@@ -219,6 +225,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
                 partses.get(measuredCounts+1-unMeasuredCounts).setSelected(true);
             partses.get(measuredCounts-unMeasuredCounts).setSelected(false);
             partses.get(measuredCounts-unMeasuredCounts).setActValue(length); //cm
+            canRemeasureData.add(measuredCounts-unMeasuredCounts);
             if (unMeasuredCounts != 0) {
                 unMeasuredCounts = unMeasuredCounts - 1;
             }
@@ -249,7 +256,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     @Override
     public void showErrorTip(String msg) {
         ToastUtil.showShort(msg);
-        if(msg=="现有连接已断开！"){
+        if(msg=="当前连接已断开！"){
 //            bleState.setImageResource(R.drawable.ble_disconnected);
         }
 

@@ -3,15 +3,14 @@ package cc.lotuscard.contract;
 import com.jaydenxiao.common.base.BaseModel;
 import com.jaydenxiao.common.base.BasePresenter;
 import com.jaydenxiao.common.base.BaseView;
-import com.polidea.rxandroidble.RxBleConnection;
-import com.polidea.rxandroidble.RxBleDeviceServices;
-import com.polidea.rxandroidble.scan.ScanResult;
+import com.polidea.rxandroidble2.RxBleDeviceServices;
+import com.polidea.rxandroidble2.scan.ScanResult;
 
-import java.util.List;
 
-import cc.lotuscard.bean.BleDevice;
 import cc.lotuscard.bean.QualityData;
-import rx.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+
 
 /**
  * Created by Administrator on 2018/3/28 0028.
@@ -23,7 +22,7 @@ public interface QualityContract {
 
         Observable<ScanResult> getBleDeviceData();
 
-        Observable<RxBleDeviceServices> chooseDeviceConnect(String mac);
+        Maybe<RxBleDeviceServices> chooseDeviceConnect(String mac);
     }
 
     interface View extends BaseView {

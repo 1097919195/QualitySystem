@@ -29,12 +29,12 @@ import com.jaydenxiao.common.baserx.RxBus;
 import com.jaydenxiao.common.commonutils.LogUtils;
 import com.jaydenxiao.common.commonutils.SPUtils;
 import com.jaydenxiao.common.commonutils.ToastUtil;
-import com.polidea.rxandroidble.RxBleClient;
-import com.polidea.rxandroidble.RxBleConnection;
-import com.polidea.rxandroidble.RxBleDevice;
-import com.polidea.rxandroidble.RxBleDeviceServices;
-import com.polidea.rxandroidble.scan.ScanResult;
-import com.tbruyelle.rxpermissions.RxPermissions;
+import com.polidea.rxandroidble2.RxBleClient;
+import com.polidea.rxandroidble2.RxBleConnection;
+import com.polidea.rxandroidble2.RxBleDevice;
+import com.polidea.rxandroidble2.RxBleDeviceServices;
+import com.polidea.rxandroidble2.scan.ScanResult;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +55,6 @@ import cc.lotuscard.identificationcardtest.R;
 import cc.lotuscard.model.QualityModel;
 import cc.lotuscard.presenter.QualityPresenter;
 import cc.lotuscard.broadcast.UsbListenerBroadcast;
-import rx.functions.Action1;
 
 
 public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,QualityModel> implements QualityContract.View {
@@ -82,7 +81,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     private RxBleClient rxBleClient;
     private List<BleDevice> bleDeviceList = new ArrayList<>();
     private CommonRecycleViewAdapter<BleDevice> bleDeviceAdapter;
-    private MaterialDialog scanResultDialog,cirProgressBar;
+    private MaterialDialog scanResultDialog,cirProgressBarWithScan,cirProgressBarWithChoose;
     private List<String> rxBleDeviceAddressList = new ArrayList<>();
 
     /*********************************** UI *********************************/
@@ -155,9 +154,15 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 .dividerColor(getResources().getColor(R.color.white))
                 .build();
 
-        cirProgressBar = new MaterialDialog.Builder(this)
+        cirProgressBarWithScan = new MaterialDialog.Builder(this)
                 .progress(true, 100)
-                .content("请稍等...")
+                .content("扫描附近蓝牙...")
+                .backgroundColor(getResources().getColor(R.color.white))
+                .build();
+
+        cirProgressBarWithChoose = new MaterialDialog.Builder(this)
+                .progress(true, 100)
+                .content("配对中...")
                 .backgroundColor(getResources().getColor(R.color.white))
                 .build();
     }
@@ -180,18 +185,20 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                     .subscribe(permission -> { // will emit 2 Permission objects
                         if (permission.granted) {
                             // FIXME: 2018/4/10 0010 需检测当前位置有没有开启
-                            cirProgressBar.show();
+                            cirProgressBarWithScan.show();
                             Timer timer = new Timer();
                             timer = new Timer(true);
                             timer.schedule(new TimerTask() {
                                 @Override
                                 public void run() {
-                                    if (cirProgressBar.isShowing()){
-                                        cirProgressBar.dismiss();
-                                        RxBus.getInstance().post(AppConstant.NO_BLE_FIND,true);
+                                    if (cirProgressBarWithScan.isShowing()){
+                                        cirProgressBarWithScan.dismiss();
+//                                        RxBus.getInstance().post(AppConstant.NO_BLE_FIND,true);
                                     }
                                 }
                             }, 6000);
+                            rxBleDeviceAddressList.clear();
+                            bleDeviceList.clear();
                             mPresenter.getBleDeviceDataRequest();
 
                         } else if (permission.shouldShowRequestPermissionRationale) {
@@ -281,14 +288,14 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
         rxBleClient = AppApplication.getRxBleClient(this);
 
-        mRxManager.on(AppConstant.NO_BLE_FIND, new Action1<Boolean>() {
-            @Override
-            public void call(Boolean isChecked) {
-                if (isChecked) {
-                    ToastUtil.showShort("附近没有可见设备！");
-                }
-            }
-        });
+//        mRxManager.on(AppConstant.NO_BLE_FIND, new Action1<Boolean>() {
+//            @Override
+//            public void call(Boolean isChecked) {
+//                if (isChecked) {
+//                    ToastUtil.showShort("附近没有可见设备！请重试");
+//                }
+//            }
+//        });
 
     }
 
@@ -548,15 +555,14 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     public void returnGetBleDeviceData(ScanResult scanResult) {
         if (scanResult != null) {
             RxBleDevice device = scanResult.getBleDevice();
-//            LogUtils.loge("device==="+scanResult.toString());
             if (!rxBleDeviceAddressList.contains(device.getMacAddress())) {//避免重复添加设备
                 rxBleDeviceAddressList.add(device.getMacAddress());
                 bleDeviceList.add(new BleDevice(device.getName(), device.getMacAddress(), scanResult.getRssi()));
                 bleDeviceAdapter.notifyDataSetChanged();
             }
 
-            if (rxBleDeviceAddressList.size() != 0 && cirProgressBar.isShowing()) {
-                cirProgressBar.dismiss();
+            if (rxBleDeviceAddressList.size() != 0 && cirProgressBarWithScan.isShowing()) {
+                cirProgressBarWithScan.dismiss();
                 scanResultDialog.show();
             }
         }
@@ -570,6 +576,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 if (isCharacteristicNotifiable(characteristic)) {
 //                    AppApplication.setUUID(this, characteristic.getUuid());
                     SPUtils.setSharedStringData(AppApplication.getAppContext(), AppConstant.UUID,characteristic.getUuid().toString());
+                    cirProgressBarWithChoose.dismiss();
                     ToastUtil.showShort("蓝牙配对成功");
                     break;
                 }
@@ -678,6 +685,9 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
     @Override
     public void showLoading(String title) {
+        if (title=="chooseConnect") {
+            cirProgressBarWithChoose.show();
+        }
 
     }
 
@@ -691,6 +701,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
         ToastUtil.showShort(msg);
         //蓝牙连接失败
         if(msg=="connectFail"){
+            cirProgressBarWithChoose.dismiss();
             bleState.setImageResource(R.drawable.ble_disconnected);
         }
     }

@@ -5,7 +5,8 @@ import android.content.Context;
 
 import com.jaydenxiao.common.baseapp.BaseApplication;
 import com.jaydenxiao.common.commonutils.LogUtils;
-import com.polidea.rxandroidble.RxBleClient;
+import com.polidea.rxandroidble2.RxBleClient;
+
 
 import java.util.UUID;
 

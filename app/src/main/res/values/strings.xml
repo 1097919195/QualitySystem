@@ -206,5 +206,5 @@
     <string name="code_input_hint">待质检服装的编号可选择手动输入或者扫描二维码获取</string>
     <string name="manual_input_qrcode">手动输入</string>
     <string name="input_qrcode">输入编号</string>
-    <string name="next_quality">下一件质检</string>
+    <string name="next_quality">保存质检结果</string>
 </resources>

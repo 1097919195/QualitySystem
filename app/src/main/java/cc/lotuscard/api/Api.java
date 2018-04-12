@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
@@ -23,8 +24,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 /**
  * des:retorfit api
@@ -85,6 +87,7 @@ public class Api {
             }
         });
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//BODY:请求/响应行 + 头 + 体
+
         //缓存(getCacheDir()方法用于获取/data/data//cache目录)
         File cacheFile = new File(BaseApplication.getAppContext().getCacheDir(), "cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
@@ -122,7 +125,7 @@ public class Api {
                 //Josn转换器（把服务端返回的json数据解析成实体）
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 //为了支持Observable，Call类型是DefaultCallAdapterFactory默认支持的
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(ApiConstants.getHost(hostType))
                 .build();
 
@@ -179,7 +182,7 @@ public class Api {
             //要是没有网络就去缓存里面取数据
             if (!NetWorkUtils.isNetConnected(BaseApplication.getAppContext())) {
                 request = request.newBuilder()
-                        .cacheControl(TextUtils.isEmpty(cacheControl)?CacheControl.FORCE_NETWORK:CacheControl.FORCE_CACHE)
+                        .cacheControl(TextUtils.isEmpty(cacheControl)? CacheControl.FORCE_NETWORK:CacheControl.FORCE_CACHE)
                         .build();
             }
 
