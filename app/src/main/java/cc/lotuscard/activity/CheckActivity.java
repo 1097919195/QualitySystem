@@ -11,14 +11,20 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alibaba.fastjson.JSONObject;
 import com.aspsine.irecyclerview.IRecyclerView;
 import com.aspsine.irecyclerview.universaladapter.ViewHolderHelper;
 import com.aspsine.irecyclerview.universaladapter.recyclerview.CommonRecycleViewAdapter;
 import com.aspsine.irecyclerview.universaladapter.recyclerview.OnItemClickListener;
 import com.jaydenxiao.common.base.BaseActivity;
+import com.jaydenxiao.common.baserx.RxBus;
 import com.jaydenxiao.common.commonutils.LogUtils;
+import com.jaydenxiao.common.commonutils.SPUtils;
 import com.jaydenxiao.common.commonutils.ToastUtil;
+import com.polidea.rxandroidble.RxBleClient;
+import com.polidea.rxandroidble.RxBleConnection;
+import com.polidea.rxandroidble.RxBleDevice;
 
 import org.w3c.dom.Text;
 
@@ -37,6 +43,7 @@ import cc.lotuscard.presenter.CheckPresenter;
 import cc.lotuscard.utils.HexString;
 import cc.lotuscard.widget.MeasureStateEnum;
 import cc.lotuscard.widget.MyLineLayout;
+import rx.functions.Action1;
 
 /**
  * Created by Administrator on 2018/3/29 0029.
@@ -46,15 +53,17 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
 
     //    @Bind(R.id.irc_quality_data)
     IRecyclerView irc;
-    TextView deBattery;
+    TextView deBattery,reconnect;
 
     CommonRecycleViewAdapter<QualityData.Parts> adapter;
     List<QualityData.Parts> partses = new ArrayList<>();
-    int unMeasuredCounts;
+    int unMeasuredCounts=0;
+    int measuredCounts=0;
     int itemPostion = 0;
-
+    int itemPostionAgo = 0;
     boolean remuasure = false;
-    int currentItem = 0;
+    String mac = SPUtils.getSharedStringData(AppApplication.getAppContext(), AppConstant.MAC_ADDRESS);
+    UUID characteristicUUID = UUID.fromString(SPUtils.getSharedStringData(AppApplication.getAppContext(), AppConstant.UUID));
 
     public static void startActivity(Context mContext, ArrayList<QualityData.Parts> partses) {
         Intent intent = new Intent(mContext, CheckActivity.class);
@@ -78,8 +87,38 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         irc = (IRecyclerView) findViewById(R.id.irc_quality_data);
         deBattery = (TextView) findViewById(R.id.de_battery);
+        reconnect = (TextView) findViewById(R.id.reconnect);
 
         partses = getIntent().getParcelableArrayListExtra(AppConstant.QUALITY_DATA);
+
+        initRcycleAdapter();
+        itemClickRemeasure();
+        initMeasure();
+
+        RxBleClient rxBleClient = AppApplication.getRxBleClient(this);
+        RxBleDevice rxBleDevice = rxBleClient.getBleDevice(mac);
+        RxBleConnection.RxBleConnectionState kkk = rxBleDevice.getConnectionState();
+
+        reconnect.setOnClickListener(v -> {
+            mPresenter.startMeasureRequest(characteristicUUID);
+        });
+
+        // FIXME: 2018/4/10 0010 添加蓝牙状态监听
+//        mRxManager.on(AppConstant.CONNECT_SUCCEED, new Action1<Boolean>() {
+//            @Override
+//            public void call(Boolean isConnect) {
+//                if (isConnect) {
+//                    ToastUtil.showShort("确认连接");
+//                }else {
+//                    ToastUtil.showShort("连接失败");
+//                }
+//            }
+//        });
+//
+//        RxBus.getInstance().post(AppConstant.CONNECT_SUCCEED,true);
+    }
+
+    private void initRcycleAdapter() {
         adapter = new CommonRecycleViewAdapter<QualityData.Parts>(this, R.layout.item_quality, partses) {
             @Override
             public void convert(ViewHolderHelper helper, QualityData.Parts parts) {
@@ -91,6 +130,13 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
                 primary.setText(String.valueOf(parts.getOriValue()));
                 currect.setText(String.valueOf(parts.getActValue()));
                 currect.setTextColor(getResources().getColor(R.color.battery_color));
+                if (parts.isSelected()) {
+                    //选中的样式
+                    helper.setBackgroundColor(R.id.gravity,getResources().getColor(R.color.battery_color));
+                } else {
+                    //未选中的样式
+                    helper.setBackgroundColor(R.id.gravity,getResources().getColor(R.color.white));
+                }
 
             }
         };
@@ -106,19 +152,32 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         irc.setAdapter(adapter);
 //        irc.setLayoutManager(new LinearLayoutManager(this));
         irc.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
+    }
 
-// FIXME: 2018/4/9 0009
+    private void initMeasure() {
+        measuredCounts = partses.size();
+        unMeasuredCounts = measuredCounts;
+        partses.get(0).setSelected(true);
+        if (mac != null && characteristicUUID != null) {
+            mPresenter.startMeasureRequest(characteristicUUID);
+        } else {
+            ToastUtil.showShort("请先配对蓝牙设备！");
+        }
+    }
+
+    private void itemClickRemeasure() {
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                //此postion从2开始
                 ToastUtil.showShort(String.valueOf(position));
                 itemPostion = position;
                 remuasure = true;
-                MyLineLayout layout = (MyLineLayout) view;
-                layout.setState(MeasureStateEnum.MEASURED.ordinal());
-                layout.invalidate();
+                partses.get(itemPostionAgo).setSelected(false);
+                if(unMeasuredCounts!=0)
+                    partses.get(measuredCounts-unMeasuredCounts).setSelected(false);
+                partses.get(itemPostion).setSelected(true);
                 adapter.notifyDataSetChanged();
+                itemPostionAgo = itemPostion;
             }
 
             @Override
@@ -128,57 +187,38 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        unMeasuredCounts = partses.size();
-        String mac = AppApplication.getMacAddress(this);
-        UUID characteristicUUID = AppApplication.getUUID(this);
-        if (mac != null && characteristicUUID != null) {
-            mPresenter.startMeasureRequest(characteristicUUID);
-        } else {
-            ToastUtil.showShort("请先连接蓝牙");
-        }
-
-    }
-
     //蓝牙测量结果处理
     @Override
-    public void returnStartMeasure(byte[] bytes) {
-        String s = HexString.bytesToHex(bytes);
-        if (s.length() == AppConstant.STANDARD_LENGTH) {
-            int code = Integer.parseInt("8D6A", 16);
-            int length = Integer.parseInt(s.substring(0, 4), 16);
-            int angle = Integer.parseInt(s.substring(4, 8), 16);
-            int battery = Integer.parseInt(s.substring(8, 12), 16);
-            int a1 = length ^ code;
-            int a2 = angle ^ code;
-            int a3 = battery ^ code;
-            a1 += AppConstant.ADJUST_VALUE;
-            a2 = a2 / 10;
-//            fragment.handleMeasureData(a1, (float) a2 / 10, a3);
-            ToastUtil.showShort(String.valueOf(a1) + "==" + String.valueOf(a2) + "==" + String.valueOf(a3));
-            deBattery.setText(a3 + "%");
+    public void returnStartMeasure(Float length, Float angle, int battery) {
+        ToastUtil.showShort(String.valueOf(length) + "==" + String.valueOf(angle) + "==" + String.valueOf(battery));
 
-            //是否需要重新测量
-            if (remuasure) {
-                partses.get(itemPostion).setActValue(Float.valueOf(a1) / 10); //cm
-                adapter.notifyDataSetChanged();
-                remuasure = false;
-            }else {
-                if (unMeasuredCounts != 0) {
-                    assignValue(Float.valueOf(a1), Float.valueOf(a2)); //mm
-                } else {
-                    //无未测项目，提示测量完成
-                    ToastUtil.showShort(getString(R.string.measure_completed));
-                }
+        deBattery.setText(battery + "%");
+
+        //测量指定部位
+        if (remuasure) {
+            partses.get(itemPostion).setActValue(length); //cm
+            partses.get(itemPostion).setSelected(false);
+
+            if (unMeasuredCounts != 0)
+                partses.get(measuredCounts - unMeasuredCounts).setSelected(true);
+            adapter.notifyDataSetChanged();
+            remuasure = false;
+        } else {
+            if (unMeasuredCounts != 0) {
+                assignValue(length, angle); //mm
+            } else {
+                ToastUtil.showShort(getString(R.string.measure_completed));
             }
         }
+
     }
 
     private void assignValue(Float length, Float angle) {
         try {
-            partses.get(partses.size()-unMeasuredCounts).setActValue(length / 10); //cm
+            if(unMeasuredCounts!=1)
+                partses.get(measuredCounts+1-unMeasuredCounts).setSelected(true);
+            partses.get(measuredCounts-unMeasuredCounts).setSelected(false);
+            partses.get(measuredCounts-unMeasuredCounts).setActValue(length); //cm
             if (unMeasuredCounts != 0) {
                 unMeasuredCounts = unMeasuredCounts - 1;
             }
@@ -208,6 +248,27 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
 
     @Override
     public void showErrorTip(String msg) {
+        ToastUtil.showShort(msg);
+        if(msg=="现有连接已断开！"){
+//            bleState.setImageResource(R.drawable.ble_disconnected);
+        }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        showHandleBackPress();
+    }
+
+    private void showHandleBackPress() {
+        new MaterialDialog.Builder(this)
+                .title("确定要离开当前量体界面?")
+                .onPositive((d, i) -> {
+                    finish();
+                })
+                .positiveText(getResources().getString(R.string.sure))
+                .negativeColor(getResources().getColor(R.color.ff0000))
+                .negativeText("点错了")
+                .show();
     }
 }

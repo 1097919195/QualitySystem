@@ -2,6 +2,7 @@ package cc.lotuscard.model;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jaydenxiao.common.baserx.RxSchedulers;
+import com.jaydenxiao.common.commonutils.SPUtils;
 import com.polidea.rxandroidble.RxBleClient;
 import com.polidea.rxandroidble.RxBleConnection;
 import com.polidea.rxandroidble.RxBleDevice;
@@ -9,6 +10,7 @@ import com.polidea.rxandroidble.RxBleDevice;
 import java.util.UUID;
 
 import cc.lotuscard.app.AppApplication;
+import cc.lotuscard.app.AppConstant;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.contract.CheckContract;
 import rx.Observable;
@@ -19,7 +21,7 @@ import rx.Observable;
 
 public class CheckModel implements CheckContract.Model {
     private RxBleClient rxBleClient = AppApplication.getRxBleClient(AppApplication.getAppContext());
-    String macAddress = AppApplication.getMacAddress(AppApplication.getAppContext());
+    String macAddress = SPUtils.getSharedStringData(AppApplication.getAppContext(), AppConstant.MAC_ADDRESS);
     @Override
     public Observable<byte[]> startMeasure(UUID characteristicUUID) {
         return rxBleClient.getBleDevice(macAddress)

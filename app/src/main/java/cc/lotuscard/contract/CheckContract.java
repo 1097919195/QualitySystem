@@ -23,9 +23,10 @@ public interface CheckContract {
     }
 
     interface View extends BaseView {
-        void returnStartMeasure(byte[] bytes);
 
         void returnupLoadAfterChecked(JSONObject jsonObject);
+
+        void returnStartMeasure(Float length, Float angle, int battery);
     }
 
     abstract class Presenter extends BasePresenter<View, Model> {

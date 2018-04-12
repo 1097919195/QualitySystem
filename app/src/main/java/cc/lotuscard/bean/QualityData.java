@@ -97,6 +97,16 @@ public class QualityData implements Parcelable {
         private float oriValue;
         private float actValue;
 
+        private boolean isSelected;
+
+        public boolean isSelected() {
+            return isSelected;
+        }
+
+        public void setSelected(boolean selected) {
+            isSelected = selected;
+        }
+
         public String getName() {
             return name;
         }

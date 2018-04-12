@@ -38,7 +38,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="cc.lotuscard.activity.LotusCardDemoActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
+            android:alwaysRetainTaskState="true"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,7 +59,8 @@
         </activity>
         <activity
             android:name="cc.lotuscard.activity.CheckActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            >
 
         </activity>
 
