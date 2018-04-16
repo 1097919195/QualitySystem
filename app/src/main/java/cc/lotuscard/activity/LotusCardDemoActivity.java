@@ -26,6 +26,7 @@ import com.aspsine.irecyclerview.universaladapter.ViewHolderHelper;
 import com.aspsine.irecyclerview.universaladapter.recyclerview.CommonRecycleViewAdapter;
 import com.jaydenxiao.common.base.BaseActivity;
 import com.jaydenxiao.common.baserx.RxBus;
+import com.jaydenxiao.common.baserx.RxBus2;
 import com.jaydenxiao.common.commonutils.LogUtils;
 import com.jaydenxiao.common.commonutils.SPUtils;
 import com.jaydenxiao.common.commonutils.ToastUtil;
@@ -55,6 +56,7 @@ import cc.lotuscard.identificationcardtest.R;
 import cc.lotuscard.model.QualityModel;
 import cc.lotuscard.presenter.QualityPresenter;
 import cc.lotuscard.broadcast.UsbListenerBroadcast;
+import io.reactivex.functions.Consumer;
 
 
 public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,QualityModel> implements QualityContract.View {
@@ -193,7 +195,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                                 public void run() {
                                     if (cirProgressBarWithScan.isShowing()){
                                         cirProgressBarWithScan.dismiss();
-//                                        RxBus.getInstance().post(AppConstant.NO_BLE_FIND,true);
+                                        RxBus2.getInstance().post(AppConstant.NO_BLE_FIND,true);
                                     }
                                 }
                             }, 6000);
@@ -288,14 +290,15 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
         rxBleClient = AppApplication.getRxBleClient(this);
 
-//        mRxManager.on(AppConstant.NO_BLE_FIND, new Action1<Boolean>() {
-//            @Override
-//            public void call(Boolean isChecked) {
-//                if (isChecked) {
-//                    ToastUtil.showShort("附近没有可见设备！请重试");
-//                }
-//            }
-//        });
+        //监听是否发现附近蓝牙
+        mRxManager.on(AppConstant.NO_BLE_FIND, new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean isChecked) throws Exception {
+                if (isChecked) {
+                    ToastUtil.showShort("附近没有可见设备！请重试");
+                }
+            }
+        });
 
     }
 

@@ -28,15 +28,7 @@ ext {
     pomDescription = "Common of android picker"
 }
 
-allprojects{
-    repositories{
-        jcenter()
-        mavenCentral()
-        maven{url "https://jitpack.io"}
-        maven{url "https://maven.google.com"}
-    }
-}
-
+apply plugin: 'com.jakewharton.butterknife'
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/Parse-1.9.4.jar')
@@ -66,7 +58,8 @@ dependencies {
     compile 'com.commit451:PhotoView:1.2.4'//图片缩放
     compile 'com.orhanobut:logger:1.13'//打印日志
     compile 'com.github.bumptech.glide:glide:3.6.1'//显示图片框架
-    compile 'com.jakewharton:butterknife:7.0.1'//view注解
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.github.clans:fab:1.6.4'//悬浮动画菜单
     compile 'cn.hugeterry.updatefun:updatefun:1.8.6'//fire.im自动更新
 //    compile 'com.umeng.analytics:analytics:latest.integration'//友盟统计

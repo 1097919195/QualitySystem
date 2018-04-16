@@ -36,4 +36,11 @@ public class CheckModel implements CheckContract.Model {
     public Observable<JSONObject> upLoadAfterChecked(QualityData qualityData) {
         return null;
     }
+
+    @Override
+    public Observable<RxBleConnection.RxBleConnectionState> checkBleConnectState() {
+        return rxBleClient.getBleDevice(macAddress)
+                .observeConnectionStateChanges()
+                .compose(RxSchedulers.io_main());
+    }
 }

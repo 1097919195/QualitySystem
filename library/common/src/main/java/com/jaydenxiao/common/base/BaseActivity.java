@@ -22,6 +22,8 @@ import com.jaydenxiao.common.commonwidget.StatusBarCompat;
 import com.jaydenxiao.common.daynightmodeutils.ChangeModeController;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 
 /**
  * 基类
@@ -64,6 +66,7 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
     public Context mContext;
     public RxManager mRxManager;
     private boolean isConfigChange=false;//配置是否改变
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +79,7 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
         //首先要知道 ButterKnife.bind 的参数都是什么作用。第一个参数一般是定义需要绑定 View 的类。例如 Activity、Fragment 或者 ViewHolder 即普通的类，只要是一个对象，类中有定义 @Bind 的注解都是可以工作的。
         //第二个参数则是 ViewFinder，也就是 findViewById 方法的 receiver，它可以是 Activity 或者 View。
         //还有一种情况是 Activity 类中定义了 @Bind，这样 Activity 对象就既是 View 定义者又是 ViewFinder，所以只需要传入一个参数就可以了。
-        ButterKnife.bind(this);//绑定activity
+        unbinder = ButterKnife.bind(this);//绑定activity
         mContext = this;
         mPresenter = TUtil.getT(this, 0);
         mModel=TUtil.getT(this,1);
@@ -285,7 +288,7 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
         if(!isConfigChange){
             AppManager.getAppManager().finishActivity(this);
         }
-        ButterKnife.unbind(this);
+        unbinder.unbind();
 
     }
 }

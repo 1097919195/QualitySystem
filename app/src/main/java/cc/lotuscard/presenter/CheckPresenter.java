@@ -41,7 +41,7 @@ public class CheckPresenter extends CheckContract.Presenter{
 
                     @Override
                     protected void _onError(String message) {
-                        mView.showErrorTip("当前连接已断开！");
+//                        mView.showErrorTip("当前连接已断开！");
 
                     }
                 }));
@@ -50,5 +50,13 @@ public class CheckPresenter extends CheckContract.Presenter{
     @Override
     public void upLoadAfterCheckedRequest(QualityData qualityData) {
 
+    }
+
+    @Override
+    public void checkBleConnectStateRequest() {
+        mRxManage.add(mModel.checkBleConnectState()
+                .subscribe(
+                        connectedState->mView.returnCheckBleConnectState(connectedState)
+                ));
     }
 }

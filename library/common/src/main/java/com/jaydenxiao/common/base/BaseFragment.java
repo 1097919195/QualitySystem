@@ -15,6 +15,7 @@ import com.jaydenxiao.common.commonutils.ToastUtil;
 import com.jaydenxiao.common.commonwidget.LoadingDialog;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * des:基类fragment
@@ -58,6 +59,7 @@ public abstract  class BaseFragment<T extends BasePresenter, E extends BaseModel
     public T mPresenter;
     public E mModel;
     public RxManager mRxManager;
+    private Unbinder unbinder;
 
     @Nullable
     @Override
@@ -65,7 +67,7 @@ public abstract  class BaseFragment<T extends BasePresenter, E extends BaseModel
         if (rootView == null)
             rootView = inflater.inflate(getLayoutResource(), container, false);
         mRxManager=new RxManager();
-        ButterKnife.bind(this, rootView);//绑定fragment
+        unbinder = ButterKnife.bind(this, rootView);//绑定fragment
         mPresenter = TUtil.getT(this, 0);
         mModel= TUtil.getT(this,1);
         if(mPresenter!=null){
@@ -195,7 +197,7 @@ public abstract  class BaseFragment<T extends BasePresenter, E extends BaseModel
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         if (mPresenter != null)
             mPresenter.onDestroy();
         mRxManager.clear();

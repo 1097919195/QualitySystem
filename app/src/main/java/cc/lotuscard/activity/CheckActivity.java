@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import butterknife.BindView;
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
 import cc.lotuscard.bean.QualityData;
@@ -50,9 +51,12 @@ import cc.lotuscard.widget.MyLineLayout;
 
 public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> implements CheckContract.View {
 
-    //    @Bind(R.id.irc_quality_data)
+//    @BindView(R.id.irc_quality_data)
     IRecyclerView irc;
-    TextView deBattery,reconnect;
+//    @BindView(R.id.bleState)
+    TextView deBattery;
+//    @BindView(R.id.reconnect)
+    TextView reconnect;
 
     CommonRecycleViewAdapter<QualityData.Parts> adapter;
     List<QualityData.Parts> partses = new ArrayList<>();
@@ -95,28 +99,14 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         itemClickRemeasure();
         initMeasure();
 
-        // FIXME: 2018/4/12 0012 状态检测
-        RxBleClient rxBleClient = AppApplication.getRxBleClient(this);
-        RxBleDevice rxBleDevice = rxBleClient.getBleDevice(mac);
-        RxBleConnection.RxBleConnectionState kkk = rxBleDevice.getConnectionState();
-
         reconnect.setOnClickListener(v -> {
-            mPresenter.startMeasureRequest(characteristicUUID);
+            if(AppApplication.getRxBleClient(this).getBleDevice(mac).getConnectionState()==RxBleConnection.RxBleConnectionState.CONNECTED){
+                ToastUtil.showShort("蓝牙通讯很好，无需重新连接");
+            }else {
+                ToastUtil.showShort("重新建立连接中");
+                mPresenter.startMeasureRequest(characteristicUUID);
+            }
         });
-
-        // FIXME: 2018/4/10 0010 添加蓝牙状态监听
-//        mRxManager.on(AppConstant.CONNECT_SUCCEED, new Action1<Boolean>() {
-//            @Override
-//            public void call(Boolean isConnect) {
-//                if (isConnect) {
-//                    ToastUtil.showShort("确认连接");
-//                }else {
-//                    ToastUtil.showShort("连接失败");
-//                }
-//            }
-//        });
-//
-//        RxBus.getInstance().post(AppConstant.CONNECT_SUCCEED,true);
     }
 
     private void initRcycleAdapter() {
@@ -161,6 +151,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         partses.get(0).setSelected(true);
         if (mac != null && characteristicUUID != null) {
             mPresenter.startMeasureRequest(characteristicUUID);
+            mPresenter.checkBleConnectStateRequest();
         } else {
             ToastUtil.showShort("请先配对蓝牙设备！");
         }
@@ -219,6 +210,22 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
 
     }
 
+    //蓝牙状态监听
+    @Override
+    public void returnCheckBleConnectState(RxBleConnection.RxBleConnectionState connectionState) {
+        RxBleClient rxBleClient = AppApplication.getRxBleClient(this);
+        RxBleDevice rxBleDevice = rxBleClient.getBleDevice(mac);
+        RxBleConnection.RxBleConnectionState bleState = rxBleDevice.getConnectionState();
+        LogUtils.loge("nowstate="+bleState);
+        LogUtils.loge("state="+connectionState.toString());
+        if (bleState==connectionState.DISCONNECTED) {
+            ToastUtil.showShort("连接断开");
+        }
+        if (bleState==connectionState.CONNECTED) {
+            ToastUtil.showShort("蓝牙通信成功，请开始测量");
+        }
+    }
+
     private void assignValue(Float length, Float angle) {
         try {
             if(unMeasuredCounts!=1)
@@ -256,9 +263,6 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     @Override
     public void showErrorTip(String msg) {
         ToastUtil.showShort(msg);
-        if(msg=="当前连接已断开！"){
-//            bleState.setImageResource(R.drawable.ble_disconnected);
-        }
 
     }
 
