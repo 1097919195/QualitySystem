@@ -1,7 +1,9 @@
 package cc.lotuscard.api;
 
 
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -16,6 +18,10 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 
+import cc.lotuscard.bean.HttpResponse;
+import cc.lotuscard.utils.exception.ApiException;
+import cc.lotuscard.utils.exception.TimeoutException;
+import io.reactivex.functions.Function;
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
@@ -38,6 +44,8 @@ public class Api {
     public static final int READ_TIME_OUT = 7676;
     //连接时长，单位：毫秒
     public static final int CONNECT_TIME_OUT = 7676;
+    //服务器
+    private static final int EXCEPTION_THRESHOLD = 1000;
     public Retrofit retrofit;
     public ApiService apiService;
     public OkHttpClient okHttpClient;
@@ -206,4 +214,23 @@ public class Api {
             }
         }
     };
+
+    public static class HttpResponseFunc<T> implements Function<HttpResponse<T>, T>{
+        @Override
+        public T apply(HttpResponse<T> httpResponse) {
+            //全局处理错误信息
+            int status = httpResponse.getStatus();
+            if (status >= EXCEPTION_THRESHOLD) {
+                if (status == CONNECT_TIME_OUT) {
+                    throw new TimeoutException(httpResponse.getMsg());
+                } else {
+                    throw new ApiException(httpResponse.getMsg());
+                }
+            }
+            if (httpResponse.getData() == null) {
+                throw new ApiException("暂无数据");
+            }
+            return httpResponse.getData();
+        }
+    }
 }

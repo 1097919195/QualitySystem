@@ -40,12 +40,16 @@
             android:name="cc.lotuscard.activity.LotusCardDemoActivity"
             android:launchMode="singleTop"
             android:alwaysRetainTaskState="true"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
             </intent-filter>
@@ -60,11 +64,20 @@
         <activity
             android:name="cc.lotuscard.activity.CheckActivity"
             android:launchMode="singleTask"
-            >
-
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize">
+        </activity>
+        <activity android:name="cc.lotuscard.camera.CaptureActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize">
         </activity>
 
-        <receiver android:name="cc.lotuscard.broadcast.UsbListenerBroadcast" />
+        <receiver android:name="cc.lotuscard.broadcast.StartingUpBroadcast">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

@@ -7,13 +7,19 @@ import com.polidea.rxandroidble2.RxBleClient;
 import com.polidea.rxandroidble2.RxBleConnection;
 import com.polidea.rxandroidble2.RxBleDevice;
 
+import java.util.List;
 import java.util.UUID;
 
+import cc.lotuscard.api.Api;
+import cc.lotuscard.api.HostType;
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
 import cc.lotuscard.bean.QualityData;
+import cc.lotuscard.bean.RetQuality;
 import cc.lotuscard.contract.CheckContract;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 
 /**
@@ -33,8 +39,10 @@ public class CheckModel implements CheckContract.Model {
     }
 
     @Override
-    public Observable<JSONObject> upLoadAfterChecked(QualityData qualityData) {
-        return null;
+    public Observable<RetQuality> upLoadAfterChecked(Object[][] qualityDataList) {
+        return Api.getDefault(HostType.QUALITY_DATA_TEST)
+                .getUpLoadAfterChecked(qualityDataList)
+                .compose(RxSchedulers.io_main());
     }
 
     @Override
@@ -42,5 +50,22 @@ public class CheckModel implements CheckContract.Model {
         return rxBleClient.getBleDevice(macAddress)
                 .observeConnectionStateChanges()
                 .compose(RxSchedulers.io_main());
+    }
+
+    @Override
+    public Observable<byte[]> acceptWeightData(UUID characteristicUUID) {
+        return rxBleClient.getBleDevice(macAddress)
+                .establishConnection(false)
+                .flatMapSingle(rxBleConnection -> rxBleConnection.readCharacteristic(characteristicUUID))
+                .compose(RxSchedulers.io_main());
+    }
+
+    @Override
+    public Maybe<byte[]> settingWeightConfigure(UUID characteristicUUID, byte[] data) {
+        return rxBleClient.getBleDevice(macAddress)
+                .establishConnection(false)
+                .flatMapSingle(rxBleConnection -> rxBleConnection.writeCharacteristic(characteristicUUID, data))
+                .firstElement()
+                .compose(RxSchedulers.io_main_maybe());
     }
 }

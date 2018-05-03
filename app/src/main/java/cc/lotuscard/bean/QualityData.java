@@ -20,13 +20,13 @@ public class QualityData implements Parcelable {
      * parts : [{"name":"林秀兰","value":28},{"name":"段霞","value":29},{"name":"梁秀英","value":30}]
      */
 
-    private String id;
+    private String _id;
     private String category;
     private String type;
     private ArrayList<Parts> parts;
 
     protected QualityData(Parcel in) {
-        id = in.readString();
+        _id = in.readString();
         category = in.readString();
         type = in.readString();
     }
@@ -44,11 +44,11 @@ public class QualityData implements Parcelable {
     };
 
     public String getId() {
-        return id;
+        return _id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this._id = id;
     }
 
     public String getCategory() {
@@ -82,7 +82,7 @@ public class QualityData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeString(_id);
         dest.writeString(category);
         dest.writeString(type);
     }
@@ -94,7 +94,7 @@ public class QualityData implements Parcelable {
          */
 
         private String name;
-        private float oriValue;
+        private float value;
         private float actValue;
 
         private boolean isSelected;
@@ -116,11 +116,11 @@ public class QualityData implements Parcelable {
         }
 
         public float getOriValue() {
-            return oriValue;
+            return value;
         }
 
         public void setOriValue(float oriValue) {
-            this.oriValue = oriValue;
+            this.value = oriValue;
         }
 
         public float getActValue() {
@@ -140,7 +140,7 @@ public class QualityData implements Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.name);
-            dest.writeFloat(this.oriValue);
+            dest.writeFloat(this.value);
             dest.writeFloat(this.actValue);
         }
 
@@ -149,7 +149,7 @@ public class QualityData implements Parcelable {
 
         protected Parts(Parcel in) {
             this.name = in.readString();
-            this.oriValue = in.readFloat();
+            this.value = in.readFloat();
             this.actValue = in.readFloat();
         }
 

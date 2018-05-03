@@ -2,6 +2,7 @@ package cc.lotuscard.presenter;
 
 
 import com.jaydenxiao.common.baserx.RxSubscriber;
+import com.jaydenxiao.common.commonutils.LogUtils;
 import com.polidea.rxandroidble2.RxBleDeviceServices;
 import com.polidea.rxandroidble2.scan.ScanResult;
 
@@ -55,11 +56,11 @@ public class QualityPresenter extends QualityContract.Presenter {
     public void chooseDeviceConnectRequest(String mac) {
         mRxManage.add(mModel.chooseDeviceConnect(mac)
                 .doOnSubscribe(disposable->
-                    mView.showLoading("chooseConnect"))
+                        mView.showLoading("chooseConnect"))
                 .subscribe(services -> {
                     mView.returnChooseDeviceConnectWithSetUuid(services);
                     mView.returnChooseDeviceConnectWithSetAddress(mac);
-                },e -> mView.showErrorTip("connectFail")));
+                },e -> {mView.showErrorTip("connectFail");LogUtils.loge(e.getCause().toString());}));
 
     }
 

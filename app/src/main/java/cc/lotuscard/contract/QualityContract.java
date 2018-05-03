@@ -7,6 +7,7 @@ import com.polidea.rxandroidble2.RxBleDeviceServices;
 import com.polidea.rxandroidble2.scan.ScanResult;
 
 
+import cc.lotuscard.bean.HttpResponse;
 import cc.lotuscard.bean.QualityData;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;

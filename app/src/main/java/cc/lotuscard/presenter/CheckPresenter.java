@@ -1,12 +1,16 @@
 package cc.lotuscard.presenter;
 
 import com.jaydenxiao.common.baserx.RxSubscriber;
+import com.jaydenxiao.common.commonutils.LogUtils;
+import com.jaydenxiao.common.commonutils.ToastUtil;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import cc.lotuscard.app.AppConstant;
 import cc.lotuscard.bean.QualityData;
+import cc.lotuscard.bean.RetQuality;
 import cc.lotuscard.contract.CheckContract;
 import cc.lotuscard.utils.HexString;
 
@@ -41,15 +45,27 @@ public class CheckPresenter extends CheckContract.Presenter{
 
                     @Override
                     protected void _onError(String message) {
-//                        mView.showErrorTip("当前连接已断开！");
+//                        mView.showErrorTip("连接通讯失败！");
 
                     }
                 }));
     }
 
     @Override
-    public void upLoadAfterCheckedRequest(QualityData qualityData) {
+    public void upLoadAfterCheckedRequest(Object[][] qualityDataList) {
 
+        mRxManage.add(mModel.upLoadAfterChecked(qualityDataList).subscribeWith(new RxSubscriber<RetQuality>(mContext, true) {
+            @Override
+            protected void _onNext(RetQuality retQuality) {
+                mView.returnupLoadAfterChecked(retQuality);
+            }
+
+            @Override
+            protected void _onError(String message) {
+                mView.showErrorTip(message);
+
+            }
+        }));
     }
 
     @Override
@@ -59,4 +75,26 @@ public class CheckPresenter extends CheckContract.Presenter{
                         connectedState->mView.returnCheckBleConnectState(connectedState)
                 ));
     }
+
+    @Override
+    public void AcceptWeightDataRequest(UUID characteristicUUID) {
+        mRxManage.add(mModel.acceptWeightData(characteristicUUID)
+                .subscribe(
+                        bytes -> {
+                            mView.returnAcceptWeightData(bytes);
+                        }
+                ));
+    }
+
+    @Override
+    public void settingWeightConfigureRequest(UUID characteristicUUID, byte[] data) {
+        mRxManage.add(mModel.settingWeightConfigure(characteristicUUID, data)
+                .subscribe(
+                        bytes -> {
+                            mView.returnSettingWeightConfigure(bytes);
+                        }
+                ));
+    }
+
+
 }
