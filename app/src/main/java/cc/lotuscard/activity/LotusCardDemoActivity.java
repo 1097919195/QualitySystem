@@ -158,6 +158,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                     @Override
                     public void onClick(View v) {
                         //连接蓝牙
+                        SPUtils.setSharedStringData(AppApplication.getAppContext(), AppConstant.MAC_ADDRESS,text_mac.getText().toString());
                         mPresenter.chooseDeviceConnectRequest(text_mac.getText().toString());
                         if (scanResultDialog != null) {
                             scanResultDialog.dismiss();
@@ -673,14 +674,8 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
             }
         }
     }
-
     private boolean isCharacteristicNotifiable(BluetoothGattCharacteristic characteristic) {
         return (characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0;
-    }
-
-    @Override
-    public void returnChooseDeviceConnectWithSetAddress(String mac) {
-        SPUtils.setSharedStringData(AppApplication.getAppContext(), AppConstant.MAC_ADDRESS,mac);
     }
 
     @Override
