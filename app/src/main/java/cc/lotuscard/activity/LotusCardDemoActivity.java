@@ -386,7 +386,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 CheckUsbDeviceState();
             }
         };
-        timer.schedule(timerTask, 6000, 8000);
+        timer.schedule(timerTask, 6000, 6000);
     }
 
     private void initHandleCardDetails() {
@@ -543,14 +543,10 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
             conn = null;
         }else{
             //无设备
-            try {
-                if (usbManager == null) {
-                    usbManager = (UsbManager) AppApplication.getAppContext().getSystemService(USB_SERVICE);
-                }
-            } catch (Exception e) {
-
+            usbManager = (UsbManager) AppApplication.getAppContext().getSystemService(USB_SERVICE);
+            if (null == usbManager){
+                return;
             }
-
             //获取设备及设备名字
             deviceList = usbManager.getDeviceList();
             if (!deviceList.isEmpty()) {
@@ -630,7 +626,6 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
             ArrayList<QualityData.Parts> mlist = qualityData.getParts();
 
             if (mlist.size() > 0) {
-//                startQualityControl(mlist);
                 AppManager.getAppManager().finishActivity(CheckActivity.class);
                 AppConstant.QUALITY_NUMBER = qualityData.getId();
                 AppConstant.QUALITY_CATEGORY = qualityData.getCategory();
@@ -660,7 +655,8 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     }
 
     @Override
-    public void returnChooseDeviceConnectWithSetUuid(RxBleDeviceServices deviceServices) {
+    public void returnChooseDeviceConnectWithSetUuidAndMacAddress(RxBleDeviceServices deviceServices,String macAddress) {
+        SPUtils.setSharedStringData(AppApplication.getAppContext(), AppConstant.MAC_ADDRESS,macAddress);
         bleState.setImageResource(R.drawable.ble_connected);
         for (BluetoothGattService service : deviceServices.getBluetoothGattServices()) {
             for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
@@ -676,13 +672,6 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     private boolean isCharacteristicNotifiable(BluetoothGattCharacteristic characteristic) {
         return (characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0;
     }
-
-    @Override
-    public void returnChooseDeviceConnectWithSetAddress(String mac) {
-        SPUtils.setSharedStringData(AppApplication.getAppContext(), AppConstant.MAC_ADDRESS,mac);
-    }
-
-
 
     @Override
     public boolean callBackExtendIdDeviceProcess(Object objUser, byte[] arrBuffer) {

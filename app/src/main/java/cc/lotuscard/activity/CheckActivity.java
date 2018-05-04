@@ -280,7 +280,10 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         measuredCounts = partses.size();
         unMeasuredCounts = measuredCounts;
         partses.get(0).setSelected(true);
-        RxBus2.getInstance().post(AppConstant.DISPLAY_GRIVITY, 0);
+//        RxBus2.getInstance().post(AppConstant.DISPLAY_GRIVITY, 0);
+        big_grivity.setText(partses.get(0).getName());
+        speechSynthesizer.playText("请测" + partses.get(0).getName());//代替上面的解决快速刷卡语音
+
         if (mac != "" && uuidString != "") {
             characteristicUUID = UUID.fromString(uuidString);
             mPresenter.startMeasureRequest(characteristicUUID);

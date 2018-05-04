@@ -23,7 +23,7 @@ public interface QualityContract {
 
         Observable<ScanResult> getBleDeviceData();
 
-        Maybe<RxBleDeviceServices> chooseDeviceConnect(String mac);
+        Maybe<RxBleDeviceServices> chooseDeviceConnect(String macAddress);
     }
 
     interface View extends BaseView {
@@ -31,8 +31,7 @@ public interface QualityContract {
 
         void returnGetBleDeviceData(ScanResult scanResult);
 
-        void returnChooseDeviceConnectWithSetUuid(RxBleDeviceServices rxBleConnection);
-        void returnChooseDeviceConnectWithSetAddress(String mac);
+        void returnChooseDeviceConnectWithSetUuidAndMacAddress(RxBleDeviceServices deviceServices,String macAddress);
     }
 
     abstract class Presenter extends BasePresenter<View, Model> {
@@ -40,7 +39,7 @@ public interface QualityContract {
 
         public abstract void getBleDeviceDataRequest();
 
-        public abstract void chooseDeviceConnectRequest(String mac);
+        public abstract void chooseDeviceConnectRequest(String macAddress);
     }
 
 }

@@ -3,6 +3,7 @@ package cc.lotuscard.model;
 
 import com.jaydenxiao.common.baserx.RxSchedulers;
 
+import com.jaydenxiao.common.commonutils.LogUtils;
 import com.polidea.rxandroidble2.RxBleClient;
 import com.polidea.rxandroidble2.RxBleConnection;
 import com.polidea.rxandroidble2.RxBleDeviceServices;
@@ -10,6 +11,8 @@ import com.polidea.rxandroidble2.scan.ScanFilter;
 import com.polidea.rxandroidble2.scan.ScanResult;
 import com.polidea.rxandroidble2.scan.ScanSettings;
 
+
+import java.util.concurrent.TimeUnit;
 
 import cc.lotuscard.api.Api;
 import cc.lotuscard.api.ApiConstants;
@@ -24,6 +27,7 @@ import cc.lotuscard.utils.exception.ApiException;
 import cc.lotuscard.utils.exception.TimeoutException;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
 
 
@@ -69,12 +73,18 @@ public class QualityModel implements QualityContract.Model {
     }
 
     @Override
-    public Maybe<RxBleDeviceServices> chooseDeviceConnect(String mac) {
-        return rxBleClient.getBleDevice(mac)
+    public Maybe<RxBleDeviceServices> chooseDeviceConnect(String macAddress) {
+        return rxBleClient.getBleDevice(macAddress)
                 .establishConnection(false) //autoConnect flag布尔值：是否直接连接到远程设备（false）或在远程设备变为可用时立即自动连接
+//                .flatMapSingle(new Function<RxBleConnection, SingleSource<RxBleDeviceServices>>() {
+//                    @Override
+//                    public SingleSource<RxBleDeviceServices> apply(RxBleConnection rxBleConnection) throws Exception {
+//                        return rxBleConnection.discoverServices(30, TimeUnit.SECONDS);
+//                    }
+//                })
                 .flatMapSingle(RxBleConnection::discoverServices)
                 .firstElement() // Disconnect automatically after discovery
-                .compose(RxSchedulers.<RxBleDeviceServices>io_main_maybe());
+                .compose(RxSchedulers.io_main_maybe());
     }
 
 }
