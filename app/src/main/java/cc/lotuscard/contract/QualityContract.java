@@ -32,6 +32,7 @@ public interface QualityContract {
         void returnGetBleDeviceData(ScanResult scanResult);
 
         void returnChooseDeviceConnectWithSetUuid(RxBleDeviceServices rxBleConnection);
+        void returnChooseDeviceConnectWithSetAddress(String mac);
     }
 
     abstract class Presenter extends BasePresenter<View, Model> {

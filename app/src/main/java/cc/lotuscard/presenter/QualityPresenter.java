@@ -59,6 +59,7 @@ public class QualityPresenter extends QualityContract.Presenter {
                         mView.showLoading("chooseConnect"))
                 .subscribe(services -> {
                     mView.returnChooseDeviceConnectWithSetUuid(services);
+                    mView.returnChooseDeviceConnectWithSetAddress(mac);
                 },e -> {mView.showErrorTip("connectFail");LogUtils.loge(e.getCause().toString());}));
 
     }

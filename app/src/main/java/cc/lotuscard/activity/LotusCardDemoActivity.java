@@ -158,7 +158,6 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                     @Override
                     public void onClick(View v) {
                         //连接蓝牙
-                        SPUtils.setSharedStringData(AppApplication.getAppContext(), AppConstant.MAC_ADDRESS,text_mac.getText().toString());
                         mPresenter.chooseDeviceConnectRequest(text_mac.getText().toString());
                         if (scanResultDialog != null) {
                             scanResultDialog.dismiss();
@@ -274,7 +273,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
         cardDeviceChecked();
 
         initHandleCardDetails();
-//        initTimer();
+        initTimer();
         initRxBus2FindBle();
         initListener();
 //        initPhotoLogo();
@@ -565,12 +564,12 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
             }
             if (null == usbDevice) {
                 //时间久了会检测不到
-                AppManager.getAppManager().finishAllActivity();
-                Intent intent = new Intent(AppApplication.getAppContext(), LotusCardDemoActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                AppApplication.getAppContext().startActivity(intent);
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);
+//                AppManager.getAppManager().finishAllActivity();
+//                Intent intent = new Intent(AppApplication.getAppContext(), LotusCardDemoActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                AppApplication.getAppContext().startActivity(intent);
+//                android.os.Process.killProcess(android.os.Process.myPid());
+//                System.exit(0);
                 return;
             }
 
@@ -583,12 +582,12 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
             if (conn == null) {
                 //时间久了会检测不到
-                AppManager.getAppManager().finishAllActivity();
-                Intent intent = new Intent(AppApplication.getAppContext(), LotusCardDemoActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                AppApplication.getAppContext().startActivity(intent);
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);
+//                AppManager.getAppManager().finishAllActivity();
+//                Intent intent = new Intent(AppApplication.getAppContext(), LotusCardDemoActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                AppApplication.getAppContext().startActivity(intent);
+//                android.os.Process.killProcess(android.os.Process.myPid());
+//                System.exit(0);
                 return;
             }
 
@@ -677,6 +676,13 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     private boolean isCharacteristicNotifiable(BluetoothGattCharacteristic characteristic) {
         return (characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0;
     }
+
+    @Override
+    public void returnChooseDeviceConnectWithSetAddress(String mac) {
+        SPUtils.setSharedStringData(AppApplication.getAppContext(), AppConstant.MAC_ADDRESS,mac);
+    }
+
+
 
     @Override
     public boolean callBackExtendIdDeviceProcess(Object objUser, byte[] arrBuffer) {

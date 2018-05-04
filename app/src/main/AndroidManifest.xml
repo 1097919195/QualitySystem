@@ -28,6 +28,8 @@
         android:name="android.permission.ACCESS_COARSE_LOCATION"
         android:maxSdkVersion="22" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name="cc.lotuscard.app.AppApplication"
         android:allowBackup="true"
@@ -42,8 +44,7 @@
             android:alwaysRetainTaskState="true"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="landscape"
-            android:configChanges="orientation|screenSize"
-            >
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
