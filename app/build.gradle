@@ -44,5 +44,7 @@ dependencies {
 
     compile 'com.afollestad.material-dialogs:commons:0.9.4.5'
     compile files('src/main/jniLibs/usc.jar')
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
 }

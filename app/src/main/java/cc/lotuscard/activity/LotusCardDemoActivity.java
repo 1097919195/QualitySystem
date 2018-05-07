@@ -50,6 +50,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import butterknife.BindView;
 import cc.lotuscard.ILotusCallBack;
 import cc.lotuscard.LotusCardDriver;
 import cc.lotuscard.LotusCardParam;
@@ -108,9 +109,10 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     private EditText displayCode;
     private Boolean flag = false;
     private StartingUpBroadcast startingUpBroadcast;
-    private ImageView bleState;
-    private ImageView company_logo;
-    private Button btnClearLog, scanTwoCode;
+    @BindView(R.id.bleState)
+    ImageView bleState;
+    @BindView(R.id.company_logo)
+    ImageView company_logo;
 
     @Override
     protected void onResume() {
@@ -260,10 +262,6 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
         m_tvDeviceNode = (TextView) findViewById(R.id.tvDeviceNode);
         displayCard = (TextView) findViewById(R.id.displayCard);
         displayCode = (EditText) findViewById(R.id.displayCode);
-        bleState = (ImageView) findViewById(R.id.bleState);
-        company_logo = (ImageView) findViewById(R.id.company_logo);
-        btnClearLog = (Button) findViewById(R.id.btnClearLog);
-        scanTwoCode = (Button) findViewById(R.id.scan_twoCode);
 
         mLotusCardDriver = new LotusCardDriver();
         mLotusCardDriver.m_lotusCallBack = this;
@@ -273,14 +271,14 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
         cardDeviceChecked();
 
         initHandleCardDetails();
-        initTimer();
+//        initTimer();
         initRxBus2FindBle();
         initListener();
 //        initPhotoLogo();
     }
 
     private void initListener() {
-        btnClearLog.setOnClickListener(v -> {
+        findViewById(R.id.btnClearLog).setOnClickListener(v -> {
             mPresenter.getQualityDataRequest("5ae1ab8cf93bfb038f326f33");
             if (null != displayCard) {
                 displayCard.setText("");
@@ -290,7 +288,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
             }
         });
 
-        scanTwoCode.setOnClickListener(v -> {
+        findViewById(R.id.scanTwoCode).setOnClickListener(v -> {
             Intent intent = new Intent(this, cc.lotuscard.camera.CaptureActivity.class);
             startActivityForResult(intent, REQUEST_CODE_WECHATUSER);
         });
