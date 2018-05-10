@@ -44,7 +44,6 @@ public class QualityPresenter extends QualityContract.Presenter {
     @Override
     public void getBleDeviceDataRequest() {
         mRxManage.add(mModel.getBleDeviceData()
-                .filter(r -> r.getBleDevice().getName() != null)//过滤名字为空的值
                 .subscribeWith(new RxSubscriber<ScanResult>(mContext, false) {
                     @Override
                     protected void _onNext(ScanResult scanResult) {

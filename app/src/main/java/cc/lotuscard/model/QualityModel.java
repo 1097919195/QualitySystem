@@ -1,6 +1,8 @@
 package cc.lotuscard.model;
 
 
+import android.text.TextUtils;
+
 import com.jaydenxiao.common.baserx.RxSchedulers;
 
 import com.jaydenxiao.common.commonutils.LogUtils;
@@ -65,23 +67,18 @@ public class QualityModel implements QualityContract.Model {
     public Observable<ScanResult> getBleDeviceData() {
         return rxBleClient.scanBleDevices(
                 new ScanSettings.Builder()
-                        .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                        .setScanMode(ScanSettings.SCAN_MODE_BALANCED)//此段代码会导致部分设备找不打对应的RxBleDeviceServices,模式一定要对
                         .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                         .build(),
-                new ScanFilter.Builder().build()
-        ).compose(RxSchedulers.<ScanResult>io_main());
+                new ScanFilter.Builder().build())
+                .filter(s -> !TextUtils.isEmpty(s.getBleDevice().getName()))
+                .compose(RxSchedulers.<ScanResult>io_main());
     }
 
     @Override
     public Maybe<RxBleDeviceServices> chooseDeviceConnect(String macAddress) {
         return rxBleClient.getBleDevice(macAddress)
                 .establishConnection(false) //autoConnect flag布尔值：是否直接连接到远程设备（false）或在远程设备变为可用时立即自动连接
-//                .flatMapSingle(new Function<RxBleConnection, SingleSource<RxBleDeviceServices>>() {
-//                    @Override
-//                    public SingleSource<RxBleDeviceServices> apply(RxBleConnection rxBleConnection) throws Exception {
-//                        return rxBleConnection.discoverServices(30, TimeUnit.SECONDS);
-//                    }
-//                })
                 .flatMapSingle(RxBleConnection::discoverServices)
                 .firstElement() // Disconnect automatically after discovery
                 .compose(RxSchedulers.io_main_maybe());
