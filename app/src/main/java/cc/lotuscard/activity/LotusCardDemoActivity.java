@@ -279,7 +279,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
     private void initListener() {
         findViewById(R.id.btnClearLog).setOnClickListener(v -> {
-            mPresenter.getQualityDataRequest("5ae1ab8cf93bfb038f326f33");
+            mPresenter.getQualityDataRequest("59f171090246a35c424dcec5");
             if (null != displayCard) {
                 displayCard.setText("");
             }
@@ -398,7 +398,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                     String strDate = formatter.format(curDate);
                     displayCard.setText(msg.obj.toString() + "  (" + strDate + ")");
                     AppConstant.QUALITY_CARD = msg.obj.toString();
-                    mPresenter.getQualityDataRequest(AppConstant.QUALITY_CARD);
+                    mPresenter.getQualityDataRequest("59f171090246a35c424dcec5");
                     flag = false;
                 }
             }

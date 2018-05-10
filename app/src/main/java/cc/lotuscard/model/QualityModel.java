@@ -56,9 +56,9 @@ public class QualityModel implements QualityContract.Model {
 //                .compose(RxSchedulers.<QualityData>io_main()
 //                );
 
-        return Api.getDefault(HostType.QUALITY_DATA_TEST)
+        return Api.getDefault(HostType.QUALITY_DATA)
                 .getQuality(id)
-//                .map(new Api.HttpResponseFunc<>())
+                .map(new Api.HttpResponseFunc<>())
                 .compose(RxSchedulers.<QualityData>io_main()
                 );
     }

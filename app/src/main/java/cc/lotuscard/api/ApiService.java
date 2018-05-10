@@ -81,10 +81,10 @@ public interface ApiService {
      * Test Api
      */
 
-    @GET("clo/quality")
-    Observable<QualityData> getQuality(
-            @Query("id") String id
-    );
+//    @GET("clo/quality")
+//    Observable<QualityData> getQuality(
+//            @Query("id") String id
+//    );
     @FormUrlEncoded
     @POST("clo/compare")
     Observable<RetQuality> getUpLoadAfterChecked(
@@ -95,9 +95,14 @@ public interface ApiService {
      * Release Api
      */
 
-//    @GET("api/qc/itemsingle/{id}")
+    @GET("api/qc/itemsingle/{id}")
+    Observable<HttpResponse<QualityData>> getQuality(
+            @Path("id") String id
+    );
+
+//    @GET("api/third/samples/parts/{content}")
 //    Observable<HttpResponse<QualityData>> getQuality(
-//            @Path("id") String id
+//            @Path("content") String id
 //    );
 
 }

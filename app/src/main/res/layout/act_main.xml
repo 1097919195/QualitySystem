@@ -153,6 +153,7 @@
         android:textSize="@dimen/font_large" />
 
     <Button
+        android:visibility="gone"
         android:layout_toLeftOf="@+id/scanTwoCode"
         android:layout_marginBottom="60dp"
         android:layout_marginRight="60dp"
@@ -160,7 +161,7 @@
         android:id="@+id/btnCodeTrun"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:text="马枪"
+        android:text="码枪"
         android:background="@drawable/btn_usual"
         android:textColor="@color/white"
         android:textSize="@dimen/font_large" />

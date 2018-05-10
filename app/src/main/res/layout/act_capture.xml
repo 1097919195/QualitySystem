@@ -45,6 +45,7 @@
             <!--android:src="@mipmap/hand" />-->
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/enter_qrcode_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

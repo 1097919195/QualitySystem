@@ -18,7 +18,7 @@ package cc.lotuscard.api;
 
 public class ApiConstants {
     public static final String QUALITY_HOST_TEST = "http://rap2api.taobao.org/app/mock/8690/";
-    public static final String QUALITY_HOST = "http://www.npclo.com/";
+    public static final String QUALITY_HOST = "https://www.npclo.com/";
 
     /**
      * 获取对应的host
