@@ -7,6 +7,8 @@ import com.polidea.rxandroidble2.RxBleDeviceServices;
 import com.polidea.rxandroidble2.scan.ScanResult;
 
 
+import java.util.ArrayList;
+
 import cc.lotuscard.bean.HttpResponse;
 import cc.lotuscard.bean.QualityData;
 import io.reactivex.Maybe;
@@ -19,7 +21,9 @@ import io.reactivex.Observable;
 
 public interface QualityContract {
     interface Model extends BaseModel {
-        Observable<QualityData> getQualityData(String id);
+        Observable<QualityData> getQualityData(String id);//质检项目
+
+        Observable<HttpResponse<ArrayList<QualityData.Parts>>> getQualitySampleData(String id);//质检样衣
 
         Observable<ScanResult> getBleDeviceData();
 
@@ -29,6 +33,8 @@ public interface QualityContract {
     interface View extends BaseView {
         void returnGetQualityData(QualityData qualityData);
 
+        void returnGetQualitySampleData(HttpResponse<ArrayList<QualityData.Parts>> qualityData);
+
         void returnGetBleDeviceData(ScanResult scanResult);
 
         void returnChooseDeviceConnectWithSetUuidAndMacAddress(RxBleDeviceServices deviceServices,String macAddress);
@@ -36,6 +42,8 @@ public interface QualityContract {
 
     abstract class Presenter extends BasePresenter<View, Model> {
         public abstract void getQualityDataRequest(String id);
+
+        public abstract void getQualitySampleDataRequest(String id);
 
         public abstract void getBleDeviceDataRequest();
 

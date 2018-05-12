@@ -14,6 +14,7 @@ import com.polidea.rxandroidble2.scan.ScanResult;
 import com.polidea.rxandroidble2.scan.ScanSettings;
 
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import cc.lotuscard.api.Api;
@@ -60,6 +61,14 @@ public class QualityModel implements QualityContract.Model {
                 .getQuality(id)
                 .map(new Api.HttpResponseFunc<>())
                 .compose(RxSchedulers.<QualityData>io_main()
+                );
+    }
+
+    @Override
+    public Observable<HttpResponse<ArrayList<QualityData.Parts>>> getQualitySampleData(String id) {
+        return Api.getDefault(HostType.QUALITY_DATA)
+                .getQualitySample(id)
+                .compose(RxSchedulers.io_main()
                 );
     }
 

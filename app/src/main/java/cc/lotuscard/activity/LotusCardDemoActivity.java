@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.aspsine.irecyclerview.universaladapter.ViewHolderHelper;
 import com.aspsine.irecyclerview.universaladapter.recyclerview.CommonRecycleViewAdapter;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jaydenxiao.common.base.BaseActivity;
 import com.jaydenxiao.common.baseapp.AppManager;
 import com.jaydenxiao.common.baserx.RxBus2;
@@ -57,6 +58,7 @@ import cc.lotuscard.LotusCardParam;
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
 import cc.lotuscard.bean.BleDevice;
+import cc.lotuscard.bean.HttpResponse;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.contract.QualityContract;
 import cc.lotuscard.identificationcardtest.R;
@@ -300,6 +302,17 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
             }
 
         });
+
+        RxTextView.textChanges(displayCode)
+                .debounce( 600 , TimeUnit.MILLISECONDS )
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        if (!TextUtils.isEmpty(displayCode.getEditableText())) {
+                            mPresenter.getQualityDataRequest(displayCode.getEditableText().toString());
+                        }
+                    }
+                });
     }
 
     //二维码扫描返回
@@ -313,26 +326,32 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 case SCAN_HINT:
                     if (result != null) {
                         LogUtils.loge("二维码解析====" + result);
-                        if (requestCode == REQUEST_CODE_CONTRACT) {
+                        if (result.contains("http")) {
+//                            mPresenter.getQualitySampleDataRequest("http://weixin.qq.com/q/0238AvlMIAdW210000g07m");
+                            mPresenter.getQualitySampleDataRequest(result);
+                        }else {
                             mPresenter.getQualityDataRequest(result);
-                        } else if (requestCode == REQUEST_CODE_WECHATUSER) {
-                            if (result.contains("https")) {
-                                //解析出tid(ThirdMember中id)
-                                int redirectUriIndex = result.indexOf(REDIRECT_URI) + REDIRECT_URI.length() + 1;
-                                String s = result.substring(redirectUriIndex);
-                                try {
-//                                    String tid = LogUtils.getParams(s, "tid");
-//                                    String cid = PreferencesUtils.getInstance(getActivity()).getMeasureCid();
-//                                    mPresenter.getThirdMemberInfo(tid, cid);
-                                    mPresenter.getQualityDataRequest(result);
-                                } catch (Exception e) {
-                                    ToastUtil.showShort("二维码解析失败，请重试");
-                                    return;
-                                }
-                            } else {
-                                mPresenter.getQualityDataRequest(result);
-                            }
                         }
+//                        if (requestCode == REQUEST_CODE_CONTRACT) {
+//                            mPresenter.getQualityDataRequest(result);
+//                        } else if (requestCode == REQUEST_CODE_WECHATUSER) {
+//                            if (result.contains("http")) {
+//                                //解析出tid(ThirdMember中id)
+//                                int redirectUriIndex = result.indexOf(REDIRECT_URI) + REDIRECT_URI.length() + 1;
+//                                String s = result.substring(redirectUriIndex);
+//                                try {
+////                                    String tid = LogUtils.getParams(s, "tid");
+////                                    String cid = PreferencesUtils.getInstance(getActivity()).getMeasureCid();
+////                                    mPresenter.getThirdMemberInfo(tid, cid);
+//                                    mPresenter.getQualityDataRequest(result);
+//                                } catch (Exception e) {
+//                                    ToastUtil.showShort("二维码解析失败，请重试");
+//                                    return;
+//                                }
+//                            } else {
+//                                mPresenter.getQualityDataRequest(result);
+//                            }
+//                        }
                     } else {
                         ToastUtil.showShort(getString(R.string.scan_qrcode_failed));
                     }
@@ -620,6 +639,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     //需要质检的数据
     @Override
     public void returnGetQualityData(QualityData qualityData) {
+//        displayCard.setText("");
         if (qualityData != null) {
             ArrayList<QualityData.Parts> mlist = qualityData.getParts();
 
@@ -632,6 +652,24 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 ToastUtil.showShort("无对应的数据!");
             }
         }
+    }
+
+    @Override
+    public void returnGetQualitySampleData(HttpResponse<ArrayList<QualityData.Parts>> qualityData) {
+        if (qualityData.getStatus() == 200) {
+            ArrayList<QualityData.Parts> mlist = qualityData.getData();
+            if (mlist.size() > 0) {
+                AppManager.getAppManager().finishActivity(CheckActivity.class);
+//                AppConstant.QUALITY_NUMBER = qualityData.getId();
+//                AppConstant.QUALITY_CATEGORY = qualityData.getCategory();
+                CheckActivity.startActivity(mContext, mlist);
+            } else {
+                ToastUtil.showShort("无对应的数据!");
+            }
+        }else {
+            ToastUtil.showShort("请先绑定样衣数据");
+        }
+
     }
 
     //获取附近的蓝牙设备

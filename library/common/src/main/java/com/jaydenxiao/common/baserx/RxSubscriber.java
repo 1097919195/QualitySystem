@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.jaydenxiao.common.baseapp.BaseApplication;
 import com.jaydenxiao.common.R;
+import com.jaydenxiao.common.commonutils.LogUtils;
 import com.jaydenxiao.common.commonutils.NetWorkUtils;
 import com.jaydenxiao.common.commonwidget.LoadingDialog;
 import io.reactivex.observers.DisposableObserver;
@@ -80,6 +81,7 @@ public abstract class RxSubscriber<T> extends DisposableObserver<T> {
     }
     @Override
     public void onError(Throwable e) {
+        LogUtils.loge("==="+e.getMessage());
         if (showDialog)
             LoadingDialog.cancelDialogForLoading();
         e.printStackTrace();

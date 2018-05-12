@@ -95,14 +95,16 @@ public interface ApiService {
      * Release Api
      */
 
+    //质检项目
     @GET("api/qc/itemsingle/{id}")
     Observable<HttpResponse<QualityData>> getQuality(
             @Path("id") String id
     );
 
-//    @GET("api/third/samples/parts/{content}")
-//    Observable<HttpResponse<QualityData>> getQuality(
-//            @Path("content") String id
-//    );
+    //质检样衣
+    @GET("api/third/samples/parts")
+    Observable<HttpResponse<ArrayList<QualityData.Parts>>> getQualitySample(
+            @Query("content") String id
+    );
 
 }

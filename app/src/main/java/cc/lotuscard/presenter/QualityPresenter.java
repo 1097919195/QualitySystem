@@ -11,8 +11,11 @@ import com.jaydenxiao.common.commonutils.ToastUtil;
 import com.polidea.rxandroidble2.RxBleDeviceServices;
 import com.polidea.rxandroidble2.scan.ScanResult;
 
+import java.util.ArrayList;
+
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
+import cc.lotuscard.bean.HttpResponse;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.contract.QualityContract;
 import io.reactivex.disposables.Disposable;
@@ -37,6 +40,22 @@ public class QualityPresenter extends QualityContract.Presenter {
                     protected void _onError(String message) {
                         mView.showErrorTip(message);
 
+                    }
+                }));
+    }
+
+    @Override
+    public void getQualitySampleDataRequest(String id) {
+        mRxManage.add(mModel.getQualitySampleData(id)
+                .subscribeWith(new RxSubscriber<HttpResponse<ArrayList<QualityData.Parts>>>(mContext, true) {
+                    @Override
+                    protected void _onNext(HttpResponse<ArrayList<QualityData.Parts>> qualityData) {
+                        mView.returnGetQualitySampleData(qualityData);
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+                        mView.showErrorTip(message);
                     }
                 }));
     }
