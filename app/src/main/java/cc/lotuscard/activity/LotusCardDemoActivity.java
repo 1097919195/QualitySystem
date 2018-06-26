@@ -796,7 +796,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
                         //如果失败了则sleep跳出,再循环
                         if (!bResult) {
-                            Thread.sleep(500);
+                            Thread.sleep(200);
                             continue;
                         }
 
