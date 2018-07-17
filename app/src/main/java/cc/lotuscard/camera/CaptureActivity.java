@@ -97,7 +97,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback 
         toolbarTitle.setText("扫描二维码");
         item.setTitle("帮助");
         item.setOnMenuItemClickListener(v -> {
-            Toast.makeText(CaptureActivity.this, "帮助界面开发中", Toast.LENGTH_SHORT).show();
+            showEnterCodeView();//手动输入二维码
             return false;
         });
         toolbar.setNavigationOnClickListener(view ->  {

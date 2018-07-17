@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
 import cc.lotuscard.bean.HttpResponse;
+import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.contract.QualityContract;
 import io.reactivex.disposables.Disposable;
@@ -27,12 +28,12 @@ import io.reactivex.functions.Consumer;
 
 public class QualityPresenter extends QualityContract.Presenter {
     @Override
-    public void getQualityDataRequest(String id) {
+    public void getQualityDataRequest(String num) {
 
-        mRxManage.add(mModel.getQualityData(id)
-                .subscribeWith(new RxSubscriber<QualityData>(mContext, true) {
+        mRxManage.add(mModel.getQualityData(num)
+                .subscribeWith(new RxSubscriber<PartsData>(mContext, true) {
                     @Override
-                    protected void _onNext(QualityData qualityData) {
+                    protected void _onNext(PartsData qualityData) {
                         mView.returnGetQualityData(qualityData);
                     }
 

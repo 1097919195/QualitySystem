@@ -21,4 +21,8 @@ public class AppConstant {
     public static final String NO_BLE_FIND="NO_BLE_FIND";
     public static final String DISPLAY_GRIVITY = "DISPLAY_GRIVITY";
 
+    public static final String TOKEN = "TOKEN";
+    public static final String USERINFO_NAME = "USERINFO_NAME";
+    public static final String USERINFO_PASS = "USERINFO_PASS";
+
 }

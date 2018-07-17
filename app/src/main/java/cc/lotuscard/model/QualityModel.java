@@ -23,6 +23,7 @@ import cc.lotuscard.api.ApiService;
 import cc.lotuscard.api.HostType;
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.bean.HttpResponse;
+import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.contract.QualityContract;
 
@@ -49,7 +50,7 @@ public class QualityModel implements QualityContract.Model {
     private RxBleClient rxBleClient = AppApplication.getRxBleClient(AppApplication.getAppContext());
 
     @Override
-    public Observable<QualityData> getQualityData(String id) {
+    public Observable<PartsData> getQualityData(String num) {
         //api2
 //        return retrofit.create(ApiService.class)
 //                .getQuality("5ae05f9df93bfb047018e653")
@@ -57,10 +58,10 @@ public class QualityModel implements QualityContract.Model {
 //                .compose(RxSchedulers.<QualityData>io_main()
 //                );
 
-        return Api.getDefault(HostType.QUALITY_DATA)
-                .getQuality(id)
+        return Api.getDefault(HostType.QUALITY_DATA_NEW)
+                .getQuality(num)
                 .map(new Api.HttpResponseFunc<>())
-                .compose(RxSchedulers.<QualityData>io_main()
+                .compose(RxSchedulers.io_main()
                 );
     }
 

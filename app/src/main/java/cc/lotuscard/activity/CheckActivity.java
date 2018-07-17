@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
+import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.bean.RetQuality;
 import cc.lotuscard.contract.CheckContract;
@@ -69,8 +70,8 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     TextView bleName;
     Button btnBigSaveData, btnBack;
 
-    CommonRecycleViewAdapter<QualityData.Parts> adapter;
-    List<QualityData.Parts> partses = new ArrayList<>();
+    CommonRecycleViewAdapter<PartsData.ApparelInfoBean> adapter;
+    List<PartsData.ApparelInfoBean> partses = new ArrayList<>();
     int unMeasuredCounts=0;
     int measuredCounts=0;
     int itemPostion = 0;
@@ -84,7 +85,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     public SpeechSynthesizer speechSynthesizer;//提供对已安装的语音合成引擎的功能的访问
     float measurelength = 0;
 
-    public static void startActivity(Context mContext, ArrayList<QualityData.Parts> partses) {
+    public static void startActivity(Context mContext, ArrayList<PartsData.ApparelInfoBean> partses) {
         Intent intent = new Intent(mContext, CheckActivity.class);
         intent.putExtra(AppConstant.QUALITY_DATA, partses);
         mContext.startActivity(intent);
@@ -155,10 +156,10 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
                         if (unMeasuredCounts == 0) {
                             List<String> gravity = new ArrayList<>();
                             List<Float> actValue = new ArrayList<>();
-                            for (QualityData.Parts p : partses) {
+                            for (PartsData.ApparelInfoBean p : partses) {
                                 gravity.add(p.getName());
                             }
-                            for (QualityData.Parts p : partses) {
+                            for (PartsData.ApparelInfoBean p : partses) {
                                 actValue.add(p.getActValue());
                             }
                             String[] stringsGrivaty = (String[]) gravity.toArray(new String[gravity.size()]);
@@ -227,15 +228,15 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     }
 
     private void initRcycleAdapter() {
-        adapter = new CommonRecycleViewAdapter<QualityData.Parts>(this, R.layout.item_quality, partses) {
+        adapter = new CommonRecycleViewAdapter<PartsData.ApparelInfoBean>(this, R.layout.item_quality, partses) {
             @Override
-            public void convert(ViewHolderHelper helper, QualityData.Parts parts) {
+            public void convert(ViewHolderHelper helper, PartsData.ApparelInfoBean parts) {
                 TextView gravity = helper.getView(R.id.gravity);
                 TextView primary = helper.getView(R.id.primary);
                 TextView currect = helper.getView(R.id.currect);
 
                 gravity.setText(parts.getName());
-                primary.setText(String.valueOf(parts.getOriValue()));
+                primary.setText(String.valueOf(parts.getValue()));
                 currect.setText(String.valueOf(parts.getActValue()));
 
                 currect.setTextColor(getResources().getColor(R.color.battery_color));

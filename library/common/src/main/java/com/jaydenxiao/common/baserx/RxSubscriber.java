@@ -9,6 +9,7 @@ import com.jaydenxiao.common.commonutils.LogUtils;
 import com.jaydenxiao.common.commonutils.NetWorkUtils;
 import com.jaydenxiao.common.commonwidget.LoadingDialog;
 import io.reactivex.observers.DisposableObserver;
+import retrofit2.HttpException;
 
 
 /**
@@ -92,6 +93,11 @@ public abstract class RxSubscriber<T> extends DisposableObserver<T> {
         //服务器
         else if (e instanceof ServerException) {
             _onError(e.getMessage());
+        }
+        else if (e instanceof HttpException){
+            HttpException exception = (HttpException) e;
+            int code = exception.response().code();
+            LogUtils.loge("onErrorCode==" + code);
         }
         //其它
         else {

@@ -38,6 +38,15 @@
         android:roundIcon="@mipmap/gxkj_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity android:name="cc.lotuscard.activity.AccountActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="cc.lotuscard.activity.LotusCardDemoActivity"
             android:launchMode="singleTop"
@@ -45,11 +54,7 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="landscape"
             android:configChanges="orientation|screenSize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />

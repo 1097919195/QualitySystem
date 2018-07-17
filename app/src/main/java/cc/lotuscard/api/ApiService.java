@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.lotuscard.bean.HttpResponse;
+import cc.lotuscard.bean.LoginTokenData;
+import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.bean.RetQuality;
 import io.reactivex.Observable;
@@ -95,10 +97,18 @@ public interface ApiService {
      * Release Api
      */
 
+    //登录
+    @FormUrlEncoded
+    @POST("api/client/login")
+    Observable<HttpResponse<LoginTokenData>> getTokenWithSignIn(
+            @Field("mobile") String username,
+            @Field("password") String password
+    );
+
     //质检项目
-    @GET("api/qc/itemsingle/{id}")
-    Observable<HttpResponse<QualityData>> getQuality(
-            @Path("id") String id
+    @GET("api/client/get_clothes")
+    Observable<HttpResponse<PartsData>> getQuality(
+            @Query("num") String num
     );
 
     //质检样衣

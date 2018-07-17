@@ -1,6 +1,7 @@
 package cc.lotuscard.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -18,6 +19,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,6 +61,7 @@ import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
 import cc.lotuscard.bean.BleDevice;
 import cc.lotuscard.bean.HttpResponse;
+import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.contract.QualityContract;
 import cc.lotuscard.identificationcardtest.R;
@@ -115,6 +118,12 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     ImageView bleState;
     @BindView(R.id.company_logo)
     ImageView company_logo;
+
+    public static void startAction(Activity activity) {
+        Intent intent = new Intent(activity, LotusCardDemoActivity.class);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
 
     @Override
     protected void onResume() {
@@ -281,7 +290,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
     private void initListener() {
         findViewById(R.id.btnClearLog).setOnClickListener(v -> {
-            mPresenter.getQualityDataRequest("59f171090246a35c424dcec5");
+            mPresenter.getQualityDataRequest("826168449");
             if (null != displayCard) {
                 displayCard.setText("");
             }
@@ -304,12 +313,13 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
         });
 
         RxTextView.textChanges(displayCode)
-                .debounce( 600 , TimeUnit.MILLISECONDS )
+                .debounce( 500 , TimeUnit.MILLISECONDS )
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
                         if (!TextUtils.isEmpty(displayCode.getEditableText())) {
                             mPresenter.getQualityDataRequest(displayCode.getEditableText().toString());
+                            ((InputMethodManager)getSystemService(mContext.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(LotusCardDemoActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                         }
                     }
                 });
@@ -358,9 +368,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                     break;
                 case CODE_HINT:
                     if (result != null) {
-                        if (requestCode == REQUEST_CODE_CONTRACT) {
-                            mPresenter.getQualityDataRequest(result);
-                        } else if (requestCode == REQUEST_CODE_WECHATUSER) {
+                        if (requestCode == REQUEST_CODE_WECHATUSER) {
                             mPresenter.getQualityDataRequest(result);
                         }
                     } else {
@@ -417,7 +425,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                     String strDate = formatter.format(curDate);
                     displayCard.setText(msg.obj.toString() + "  (" + strDate + ")");
                     AppConstant.QUALITY_CARD = msg.obj.toString();
-                    mPresenter.getQualityDataRequest("59f171090246a35c424dcec5");
+                    mPresenter.getQualityDataRequest(AppConstant.QUALITY_CARD);
                     flag = false;
                 }
             }
@@ -638,37 +646,37 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
     //需要质检的数据
     @Override
-    public void returnGetQualityData(QualityData qualityData) {
-//        displayCard.setText("");
+    public void returnGetQualityData(PartsData qualityData) {
+        displayCard.setText("");
         if (qualityData != null) {
-            ArrayList<QualityData.Parts> mlist = qualityData.getParts();
-
-            if (mlist.size() > 0) {
+            ArrayList<PartsData.ApparelInfoBean> parts = qualityData.getApparel_info();
+            if (parts.size() > 0) {
                 AppManager.getAppManager().finishActivity(CheckActivity.class);
-                AppConstant.QUALITY_NUMBER = qualityData.getId();
+                AppConstant.QUALITY_NUMBER = qualityData.getNum();
                 AppConstant.QUALITY_CATEGORY = qualityData.getCategory();
-                CheckActivity.startActivity(mContext, mlist);
+                CheckActivity.startActivity(mContext, parts);
             } else {
                 ToastUtil.showShort("无对应的数据!");
             }
         }
     }
 
+    // fixme 以前需要的一块质检，新的带看
     @Override
     public void returnGetQualitySampleData(HttpResponse<ArrayList<QualityData.Parts>> qualityData) {
-        if (qualityData.getStatus() == 200) {
-            ArrayList<QualityData.Parts> mlist = qualityData.getData();
-            if (mlist.size() > 0) {
-                AppManager.getAppManager().finishActivity(CheckActivity.class);
-//                AppConstant.QUALITY_NUMBER = qualityData.getId();
-//                AppConstant.QUALITY_CATEGORY = qualityData.getCategory();
-                CheckActivity.startActivity(mContext, mlist);
-            } else {
-                ToastUtil.showShort("无对应的数据!");
-            }
-        }else {
-            ToastUtil.showShort("请先绑定样衣数据");
-        }
+//        if (qualityData.getStatus() == 200) {
+//            ArrayList<QualityData.Parts> mlist = qualityData.getData();
+//            if (mlist.size() > 0) {
+//                AppManager.getAppManager().finishActivity(CheckActivity.class);
+////                AppConstant.QUALITY_NUMBER = qualityData.getId();
+////                AppConstant.QUALITY_CATEGORY = qualityData.getCategory();
+//                CheckActivity.startActivity(mContext, mlist);
+//            } else {
+//                ToastUtil.showShort("无对应的数据!");
+//            }
+//        }else {
+//            ToastUtil.showShort("请先绑定样衣数据");
+//        }
 
     }
 
