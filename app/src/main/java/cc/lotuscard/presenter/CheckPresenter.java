@@ -9,10 +9,14 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import cc.lotuscard.app.AppConstant;
+import cc.lotuscard.bean.HttpResponse;
+import cc.lotuscard.bean.MultipartBeanWithUserData;
+import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.bean.RetQuality;
 import cc.lotuscard.contract.CheckContract;
 import cc.lotuscard.utils.HexString;
+import okhttp3.MultipartBody;
 
 /**
  * Created by Administrator on 2018/4/4 0004.
@@ -66,6 +70,22 @@ public class CheckPresenter extends CheckContract.Presenter{
 
             }
         }));
+    }
+
+    @Override
+    public void upLoadQualityDataRequest(String clothesId,List<PartsData.ApparelInfoBean> data, String remark, MultipartBody.Part[] images) {
+        mRxManage.add(mModel.upLoadQualityData(clothesId,data,remark,images).subscribeWith(new RxSubscriber<HttpResponse>(mContext, true) {
+            @Override
+            protected void _onNext(HttpResponse httpResponse) {
+                mView.returnUploadQualityData(httpResponse);
+            }
+
+            @Override
+            protected void _onError(String message) {
+                mView.showErrorTip(message);
+            }
+        }));
+
     }
 
     @Override

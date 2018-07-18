@@ -9,11 +9,15 @@ import com.polidea.rxandroidble2.RxBleConnection;
 import java.util.List;
 import java.util.UUID;
 
+import cc.lotuscard.bean.HttpResponse;
+import cc.lotuscard.bean.MultipartBeanWithUserData;
+import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.bean.RetQuality;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import okhttp3.MultipartBody;
 
 
 /**
@@ -25,6 +29,8 @@ public interface CheckContract {
         Observable<byte[]> startMeasure(UUID characteristicUUID);
 
         Observable<RetQuality> upLoadAfterChecked(Object[][] qualityDataList);
+
+        Observable<HttpResponse> upLoadQualityData(String clothesId, List<PartsData.ApparelInfoBean> data, String remark, MultipartBody.Part[] images);
 
         Observable<RxBleConnection.RxBleConnectionState> checkBleConnectState();
 
@@ -38,6 +44,8 @@ public interface CheckContract {
 
         void returnupLoadAfterChecked(RetQuality retQuality);
 
+        void returnUploadQualityData(HttpResponse httpResponse);
+
         void returnCheckBleConnectState(RxBleConnection.RxBleConnectionState connectionState);
 
         void returnAcceptWeightData(byte[] bytes);
@@ -49,6 +57,8 @@ public interface CheckContract {
         public abstract void startMeasureRequest(UUID characteristicUUID);
 
         public abstract void upLoadAfterCheckedRequest(Object[][] qualityDataList);
+
+        public abstract void upLoadQualityDataRequest(String clothesId, List<PartsData.ApparelInfoBean> data, String remark, MultipartBody.Part[] images);
 
         public abstract void checkBleConnectStateRequest();
 

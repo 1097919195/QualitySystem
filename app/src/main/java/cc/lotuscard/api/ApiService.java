@@ -5,19 +5,26 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cc.lotuscard.bean.HttpResponse;
 import cc.lotuscard.bean.LoginTokenData;
+import cc.lotuscard.bean.MultipartBeanWithUserData;
 import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.bean.RetQuality;
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
@@ -87,6 +94,8 @@ public interface ApiService {
 //    Observable<QualityData> getQuality(
 //            @Query("id") String id
 //    );
+
+    //上传测试
     @FormUrlEncoded
     @POST("clo/compare")
     Observable<RetQuality> getUpLoadAfterChecked(
@@ -108,13 +117,21 @@ public interface ApiService {
     //质检项目
     @GET("api/client/get_clothes")
     Observable<HttpResponse<PartsData>> getQuality(
-            @Query("num") String num
+            @Query("c_num") String num
     );
 
     //质检样衣
     @GET("api/third/samples/parts")
     Observable<HttpResponse<ArrayList<QualityData.Parts>>> getQualitySample(
             @Query("content") String id
+    );
+
+    //质检数据上传
+    @Multipart
+    @POST("api/client/qualities")
+    Observable<HttpResponse> uploadQualityData(
+            @PartMap Map<String, RequestBody> map,
+            @Part MultipartBody.Part[] images
     );
 
 }

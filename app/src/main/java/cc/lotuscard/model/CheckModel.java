@@ -1,25 +1,34 @@
 package cc.lotuscard.model;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 import com.jaydenxiao.common.baserx.RxSchedulers;
+import com.jaydenxiao.common.commonutils.LogUtils;
 import com.jaydenxiao.common.commonutils.SPUtils;
 import com.polidea.rxandroidble2.RxBleClient;
 import com.polidea.rxandroidble2.RxBleConnection;
 import com.polidea.rxandroidble2.RxBleDevice;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import cc.lotuscard.api.Api;
 import cc.lotuscard.api.HostType;
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
+import cc.lotuscard.bean.HttpResponse;
+import cc.lotuscard.bean.MultipartBeanWithUserData;
+import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.bean.RetQuality;
 import cc.lotuscard.contract.CheckContract;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 
 /**
@@ -42,6 +51,18 @@ public class CheckModel implements CheckContract.Model {
     public Observable<RetQuality> upLoadAfterChecked(Object[][] qualityDataList) {
         return Api.getDefault(HostType.QUALITY_DATA_TEST)
                 .getUpLoadAfterChecked(qualityDataList)
+                .compose(RxSchedulers.io_main());
+    }
+
+    @Override
+    public Observable<HttpResponse> upLoadQualityData(String clothesId, List<PartsData.ApparelInfoBean> data, String remark, MultipartBody.Part[] images) {
+        String s = (new Gson()).toJson(data);
+        Map<String, RequestBody> map = new HashMap<>();
+        map.put("clothes_id", RequestBody.create(null, clothesId));
+        map.put("quality_data", RequestBody.create(null, s));
+        map.put("remark", RequestBody.create(null, remark));
+        return Api.getDefault(HostType.QUALITY_DATA_NEW)
+                .uploadQualityData(map,images)
                 .compose(RxSchedulers.io_main());
     }
 

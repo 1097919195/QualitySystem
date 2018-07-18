@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -35,13 +37,17 @@ import com.unisound.client.SpeechSynthesizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
+import cc.lotuscard.bean.HttpResponse;
+import cc.lotuscard.bean.MultipartBeanWithUserData;
 import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.bean.RetQuality;
@@ -51,6 +57,8 @@ import cc.lotuscard.model.CheckModel;
 import cc.lotuscard.presenter.CheckPresenter;
 import cc.lotuscard.utils.HexString;
 import io.reactivex.functions.Consumer;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by Administrator on 2018/3/29 0029.
@@ -69,6 +77,8 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     TextView connect_state;
     TextView bleName;
     Button btnBigSaveData, btnBack;
+    @BindView(R.id.btn_remark)
+    Button btn_remark;
 
     CommonRecycleViewAdapter<PartsData.ApparelInfoBean> adapter;
     List<PartsData.ApparelInfoBean> partses = new ArrayList<>();
@@ -84,6 +94,8 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
 
     public SpeechSynthesizer speechSynthesizer;//提供对已安装的语音合成引擎的功能的访问
     float measurelength = 0;
+
+    String remark = "";
 
     public static void startActivity(Context mContext, ArrayList<PartsData.ApparelInfoBean> partses) {
         Intent intent = new Intent(mContext, CheckActivity.class);
@@ -166,12 +178,36 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
                             Float[] stringsActValue = (Float[]) actValue.toArray(new Float[actValue.size()]);
                             Object[][] result = {stringsGrivaty, stringsActValue};
                             LogUtils.loge("resultSave==" + result[0][0] + result[1][0]);
-                            mPresenter.upLoadAfterCheckedRequest(result);
+//                            mPresenter.upLoadAfterCheckedRequest(result);
+
+//                            Map<String, RequestBody> map = new HashMap<>();
+//                            map.put("clothes_id", RequestBody.create(null, String.valueOf(price)));
+//                            map.put("quality_data", RequestBody.create(null, description));
+//                            map.put("remark", RequestBody.create(null, name));
+                            List<PartsData.ApparelInfoBean> data = (new MultipartBeanWithUserData(partses)).getParts();
+                            MultipartBody.Part[] images = new MultipartBody.Part[3];
+                            mPresenter.upLoadQualityDataRequest("5b4dad389134ca3e8e7a2132",data, remark,images);
                         } else {
                             ToastUtil.showShort("您还没有完成全部质检部位！");
                         }
                     }
                 });
+
+        btn_remark.setOnClickListener(v -> {
+                new MaterialDialog.Builder(CheckActivity.this)
+                        .title("备注信息")
+//                        .widgetColor(Color.BLUE)//输入框光标的颜色
+                        //前2个一个是hint一个是预输入的文字
+                        .input("请输入备注内容", remark, new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                remark = input.toString();
+                            }
+                        })
+                        .negativeText("取消")
+                        .positiveColor(getResources().getColor(R.color.main_blue))
+                        .show();
+        });
     }
 
     private void initSpeech() {
@@ -415,7 +451,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
 
     }
 
-    //质检上传
+    //质检上传(测试)
     @Override
     public void returnupLoadAfterChecked(RetQuality retQuality) {
         if (retQuality != null && retQuality.getStatus() == 200) {
@@ -426,6 +462,12 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
             finish();
         }
 
+    }
+
+    //质检结果上传
+    @Override
+    public void returnUploadQualityData(HttpResponse httpResponse) {
+        ToastUtil.showShort("上传成功");
     }
 
     @Override
