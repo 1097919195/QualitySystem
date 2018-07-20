@@ -4,15 +4,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -23,6 +32,7 @@ import com.aspsine.irecyclerview.universaladapter.recyclerview.CommonRecycleView
 import com.aspsine.irecyclerview.universaladapter.recyclerview.OnItemClickListener;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jaydenxiao.common.base.BaseActivity;
+import com.jaydenxiao.common.baseapp.AppManager;
 import com.jaydenxiao.common.baserx.RxBus2;
 import com.jaydenxiao.common.commonutils.FormatUtil;
 import com.jaydenxiao.common.commonutils.LogUtils;
@@ -35,8 +45,14 @@ import com.unisound.client.SpeechConstants;
 import com.unisound.client.SpeechSynthesizer;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +68,14 @@ import cc.lotuscard.bean.PartsData;
 import cc.lotuscard.bean.QualityData;
 import cc.lotuscard.bean.RetQuality;
 import cc.lotuscard.contract.CheckContract;
+import cc.lotuscard.identificationcardtest.BuildConfig;
 import cc.lotuscard.identificationcardtest.R;
 import cc.lotuscard.model.CheckModel;
 import cc.lotuscard.presenter.CheckPresenter;
+import cc.lotuscard.utils.BitmapUtils;
 import cc.lotuscard.utils.HexString;
 import io.reactivex.functions.Consumer;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
@@ -79,8 +98,13 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     Button btnBigSaveData, btnBack;
     @BindView(R.id.btn_remark)
     Button btn_remark;
+    @BindView(R.id.photosRCV)
+    RecyclerView photosRCV;
+    @BindView(R.id.camera_add)
+    FrameLayout camera_add;
 
     CommonRecycleViewAdapter<PartsData.ApparelInfoBean> adapter;
+    CommonRecycleViewAdapter<Bitmap> photosAdapter;
     List<PartsData.ApparelInfoBean> partses = new ArrayList<>();
     int unMeasuredCounts=0;
     int measuredCounts=0;
@@ -96,6 +120,15 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     float measurelength = 0;
 
     String remark = "";
+
+    // 保存图片的文件
+    private Uri imageUri;
+    public static final File PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);//获得外部存储器的第一层的文件对象
+    public static final String JPG_SUFFIX = ".jpg";
+    private String picName;
+    public static final int TAKE_PHOTO = 1222;
+    List<Bitmap> photosList = new ArrayList<>();
+    List<String> imgTag = new ArrayList<>();
 
     public static void startActivity(Context mContext, ArrayList<PartsData.ApparelInfoBean> partses) {
         Intent intent = new Intent(mContext, CheckActivity.class);
@@ -140,11 +173,39 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         initMeasure();
         initListener();
 //        initReconnectBtn();
+        initTakePhotosAdapter();
 
         findViewById(R.id.write).setOnClickListener(v -> {
 //            mPresenter.AcceptWeightDataRequest(characteristicUUID);
 //            mPresenter.settingWeightConfigureRequest(characteristicUUID,"C".getBytes());
         });
+    }
+
+    private void initTakePhotosAdapter() {
+        photosAdapter = new CommonRecycleViewAdapter<Bitmap>(this, R.layout.item_take_photos, photosList) {
+            @Override
+            public void convert(ViewHolderHelper helper, Bitmap bitmap) {
+                ImageView img = helper.getView(R.id.img);
+                ImageView del = helper.getView(R.id.del);
+
+                img.setImageBitmap(bitmap);
+                del.setOnClickListener(v -> {
+                    photosList.remove(helper.getLayoutPosition());
+                    imgTag.remove(helper.getLayoutPosition());
+                    photosAdapter.notifyDataSetChanged();
+                });
+            }
+        };
+        View view = View.inflate(this, R.layout.list_take_photos, null);
+        view.findViewById(R.id.camera_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.showShort("拍照！");
+            }
+        });
+//        photosIRCV.addHeaderView(view);
+        photosRCV.setAdapter(photosAdapter);
+        photosRCV.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
     }
 
     private void initListener() {
@@ -166,26 +227,25 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
                     @Override
                     public void accept(Object o) throws Exception {
                         if (unMeasuredCounts == 0) {
-                            List<String> gravity = new ArrayList<>();
-                            List<Float> actValue = new ArrayList<>();
-                            for (PartsData.ApparelInfoBean p : partses) {
-                                gravity.add(p.getName());
-                            }
-                            for (PartsData.ApparelInfoBean p : partses) {
-                                actValue.add(p.getActValue());
-                            }
-                            String[] stringsGrivaty = (String[]) gravity.toArray(new String[gravity.size()]);
-                            Float[] stringsActValue = (Float[]) actValue.toArray(new Float[actValue.size()]);
-                            Object[][] result = {stringsGrivaty, stringsActValue};
-                            LogUtils.loge("resultSave==" + result[0][0] + result[1][0]);
+//                            List<String> gravity = new ArrayList<>();
+//                            List<Float> actValue = new ArrayList<>();
+//                            for (PartsData.ApparelInfoBean p : partses) {
+//                                gravity.add(p.getName());
+//                            }
+//                            for (PartsData.ApparelInfoBean p : partses) {
+//                                actValue.add(p.getActValue());
+//                            }
+//                            String[] stringsGrivaty = (String[]) gravity.toArray(new String[gravity.size()]);
+//                            Float[] stringsActValue = (Float[]) actValue.toArray(new Float[actValue.size()]);
+//                            Object[][] result = {stringsGrivaty, stringsActValue};
+//                            LogUtils.loge("resultSave==" + result[0][0] + result[1][0]);
 //                            mPresenter.upLoadAfterCheckedRequest(result);
 
-//                            Map<String, RequestBody> map = new HashMap<>();
-//                            map.put("clothes_id", RequestBody.create(null, String.valueOf(price)));
-//                            map.put("quality_data", RequestBody.create(null, description));
-//                            map.put("remark", RequestBody.create(null, name));
                             List<PartsData.ApparelInfoBean> data = (new MultipartBeanWithUserData(partses)).getParts();
-                            MultipartBody.Part[] images = new MultipartBody.Part[3];
+                            MultipartBody.Part[] images = new MultipartBody.Part[imgTag.size()];
+                            for (int i=0;i<imgTag.size();i++) {
+                                images[i] = getSpecialBodyTypePic(imgTag.get(i));
+                            }
                             mPresenter.upLoadQualityDataRequest("5b4dad389134ca3e8e7a2132",data, remark,images);
                         } else {
                             ToastUtil.showShort("您还没有完成全部质检部位！");
@@ -208,6 +268,64 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
                         .positiveColor(getResources().getColor(R.color.main_blue))
                         .show();
         });
+
+        camera_add.setOnClickListener(v -> {
+            capturePic();
+        });
+    }
+
+    /**
+     * 读取特体大图
+     *
+     * @param filename
+     * @return
+     */
+    private MultipartBody.Part getSpecialBodyTypePic(String filename) {
+        File f = new File(PATH + File.separator + AppConstant.FILE_PROVIDER_NAME + File.separator + filename + JPG_SUFFIX);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
+        return MultipartBody.Part.createFormData("images[]", filename, requestFile);
+    }
+
+
+    private void capturePic() {
+        Date date = new Date(System.nanoTime());
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            // 计算md5函数
+            md.update(date.toString().getBytes());
+            picName = new BigInteger(1, md.digest()).toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            picName = date.toString();
+        }
+        File storageFile = new File(PATH.getAbsoluteFile() + File.separator + AppConstant.FILE_PROVIDER_NAME);
+        if (!storageFile.isDirectory()) {//创建目录
+            storageFile.mkdirs();
+        }
+        File outputImage = new File(storageFile, picName + JPG_SUFFIX);
+        try {
+            outputImage.createNewFile();//createNewFile()是创建一个不存在的文件。
+        } catch (IOException e) {
+            LogUtils.loge(e.toString());
+        }
+        //将File对象转换为Uri并启动照相程序
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // 系统版本大于N的统一用FileProvider处理
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // 将文件转换成content://Uri的形式
+            imageUri = FileProvider.getUriForFile(this,
+                    BuildConfig.APPLICATION_ID + ".fileprovider", outputImage);
+            // 申请临时访问权限
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        } else {
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            imageUri = Uri.fromFile(outputImage);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        }
+        startActivityForResult(intent, TAKE_PHOTO);
     }
 
     private void initSpeech() {
@@ -394,6 +512,33 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case TAKE_PHOTO:
+//扫描指定文件(通知系统刷新相册)
+                Intent intentBc1 = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                intentBc1.setData(imageUri);
+                this.sendBroadcast(intentBc1);
+
+                Bitmap bitmap = BitmapUtils.decodeUri(this, imageUri, 800, 800);
+                if (bitmap != null) {
+                    photosList.add(bitmap);
+                    if (!TextUtils.isEmpty(picName)) {
+                        imgTag.add(picName);
+                        LogUtils.loge("imaTag=="+picName);
+                    }
+                    photosAdapter.notifyDataSetChanged();
+                } else {
+                    ToastUtil.showShort("拍照失败！");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     //蓝牙状态监听
     @Override
     public void returnCheckBleConnectState(RxBleConnection.RxBleConnectionState connectionState) {
@@ -468,6 +613,10 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     @Override
     public void returnUploadQualityData(HttpResponse httpResponse) {
         ToastUtil.showShort("上传成功");
+        AppConstant.QUALITY_CARD = "";
+        AppConstant.QUALITY_NUMBER = "";
+        AppConstant.QUALITY_CATEGORY = "";
+        finish();
     }
 
     @Override
@@ -482,6 +631,15 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
 
     @Override
     public void showErrorTip(String msg) {
+        //用户信息的token过期时
+        if (msg == "token过期") {
+            SPUtils.setSharedStringData(AppApplication.getAppContext(),AppConstant.TOKEN,"");
+            AppManager.getAppManager().finishAllActivity();
+            Intent intent = new Intent(CheckActivity.this, AccountActivity.class);
+            startActivity(intent);
+            ToastUtil.showShort("用户信息已经过期,请重新登录");
+            return;
+        }
         ToastUtil.showShort(msg);
 
     }

@@ -854,6 +854,14 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     @Override
     public void showErrorTip(String msg) {
         flag = true;
+        if (msg == "token过期") {
+            SPUtils.setSharedStringData(AppApplication.getAppContext(),AppConstant.TOKEN,"");
+            AppManager.getAppManager().finishAllActivity();
+            Intent intent = new Intent(LotusCardDemoActivity.this, AccountActivity.class);
+            startActivity(intent);
+            ToastUtil.showShort("用户信息已经过期,请重新登录");
+            return;
+        }
         ToastUtil.showShort(msg);
         //蓝牙连接失败
         if(msg=="connectFail"){

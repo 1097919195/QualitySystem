@@ -126,7 +126,7 @@ public interface ApiService {
             @Query("content") String id
     );
 
-    //质检数据上传
+    //质检数据上传  (@Part上传字符串类型的参数时会多一对引号 : https://blog.csdn.net/qq_33215972/article/details/68950838)
     @Multipart
     @POST("api/client/qualities")
     Observable<HttpResponse> uploadQualityData(

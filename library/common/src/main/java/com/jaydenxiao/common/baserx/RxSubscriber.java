@@ -3,11 +3,16 @@ package com.jaydenxiao.common.baserx;
 import android.app.Activity;
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.jaydenxiao.common.baseapp.BaseApplication;
 import com.jaydenxiao.common.R;
+import com.jaydenxiao.common.basebean.HttpResponseError;
 import com.jaydenxiao.common.commonutils.LogUtils;
 import com.jaydenxiao.common.commonutils.NetWorkUtils;
 import com.jaydenxiao.common.commonwidget.LoadingDialog;
+
+import java.io.IOException;
+
 import io.reactivex.observers.DisposableObserver;
 import retrofit2.HttpException;
 
@@ -98,6 +103,37 @@ public abstract class RxSubscriber<T> extends DisposableObserver<T> {
             HttpException exception = (HttpException) e;
             int code = exception.response().code();
             LogUtils.loge("onErrorCode==" + code);
+            if (code < 500) {
+                if (code ==422) {
+                    try {
+                        String body = exception.response().errorBody().string();
+                        LogUtils.loge("onErrorBody==" + body);
+
+                        Gson gson = new Gson();
+                        HttpResponseError responseError = gson.fromJson(body, HttpResponseError.class);
+                        LogUtils.loge(responseError.getErrors().get(0).getMessage());
+                        _onError(responseError.getErrors().get(0).getMessage());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                } else if (code == 401) {
+                    _onError("token过期");
+                } else {
+                    try {
+                        String body = exception.response().errorBody().string();
+                        LogUtils.loge("onErrorBody==" + body);
+
+                        Gson gson = new Gson();
+                        HttpResponseError responseError = gson.fromJson(body, HttpResponseError.class);
+                        LogUtils.loge(responseError.getMsg());
+                        _onError(responseError.getMsg());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }else {
+                _onError("服务器异常");
+            }
         }
         //其它
         else {

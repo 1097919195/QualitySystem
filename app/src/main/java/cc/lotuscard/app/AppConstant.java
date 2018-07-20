@@ -20,6 +20,7 @@ public class AppConstant {
     public static final String CONNECT_SUCCEED="CONNECT_SUCCEED";
     public static final String NO_BLE_FIND="NO_BLE_FIND";
     public static final String DISPLAY_GRIVITY = "DISPLAY_GRIVITY";
+    public static final String FILE_PROVIDER_NAME = "gtImage";
 
     public static final String TOKEN = "TOKEN";
     public static final String USERINFO_NAME = "USERINFO_NAME";
