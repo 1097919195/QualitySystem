@@ -46,6 +46,23 @@ public class QualityPresenter extends QualityContract.Presenter {
     }
 
     @Override
+    public void getQualityDataRequestWithQRCode(String QRCode) {
+        mRxManage.add(mModel.getQualityDataWithQRCode(QRCode)
+                .subscribeWith(new RxSubscriber<PartsData>(mContext, true) {
+                    @Override
+                    protected void _onNext(PartsData qualityData) {
+                        mView.returnGetQualityDataWithQRCode(qualityData);
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+                        mView.showErrorTip(message);
+
+                    }
+                }));
+    }
+
+    @Override
     public void getQualitySampleDataRequest(String id) {
         mRxManage.add(mModel.getQualitySampleData(id)
                 .subscribeWith(new RxSubscriber<HttpResponse<ArrayList<QualityData.Parts>>>(mContext, true) {

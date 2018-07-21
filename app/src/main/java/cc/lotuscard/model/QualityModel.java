@@ -66,6 +66,15 @@ public class QualityModel implements QualityContract.Model {
     }
 
     @Override
+    public Observable<PartsData> getQualityDataWithQRCode(String QRCode) {
+        return Api.getDefault(HostType.QUALITY_DATA_NEW)
+                .getQualityWithQRCode(QRCode)
+                .map(new Api.HttpResponseFunc<>())
+                .compose(RxSchedulers.io_main()
+                );
+    }
+
+    @Override
     public Observable<HttpResponse<ArrayList<QualityData.Parts>>> getQualitySampleData(String id) {
         return Api.getDefault(HostType.QUALITY_DATA)
                 .getQualitySample(id)

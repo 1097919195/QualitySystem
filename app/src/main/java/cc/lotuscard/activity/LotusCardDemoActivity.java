@@ -307,7 +307,6 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
         // FIXME: 2018/4/28 0028
         findViewById(R.id.btnCodeTrun).setOnClickListener(v -> {
             if (displayCode.getEditableText().length() > 5) {
-                mPresenter.getQualityDataRequest(displayCode.getEditableText().toString());
             }
 
         });
@@ -318,6 +317,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                     @Override
                     public void accept(Object o) throws Exception {
                         if (!TextUtils.isEmpty(displayCode.getEditableText())) {
+                            // fixme 马枪需要一个接口
                             mPresenter.getQualityDataRequest(displayCode.getEditableText().toString());
                             ((InputMethodManager)getSystemService(mContext.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(LotusCardDemoActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                         }
@@ -338,9 +338,10 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                         LogUtils.loge("二维码解析====" + result);
                         if (result.contains("http")) {
 //                            mPresenter.getQualitySampleDataRequest("http://weixin.qq.com/q/0238AvlMIAdW210000g07m");
+                            // fixme 以前有个样衣质检的接口
                             mPresenter.getQualitySampleDataRequest(result);
                         }else {
-                            mPresenter.getQualityDataRequest(result);
+                            mPresenter.getQualityDataRequestWithQRCode(result);
                         }
 //                        if (requestCode == REQUEST_CODE_CONTRACT) {
 //                            mPresenter.getQualityDataRequest(result);
@@ -369,7 +370,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 case CODE_HINT:
                     if (result != null) {
                         if (requestCode == REQUEST_CODE_WECHATUSER) {
-                            mPresenter.getQualityDataRequest(result);
+                            mPresenter.getQualityDataRequestWithQRCode(result);
                         }
                     } else {
                         ToastUtil.showShort(getString(R.string.enter_qrcode_error));
@@ -644,9 +645,26 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
         registerReceiver(startingUpBroadcast, intentFilter);
     }
 
-    //需要质检的数据
+    //需要质检的数据(刷卡)
     @Override
     public void returnGetQualityData(PartsData qualityData) {
+        displayCard.setText("");
+        if (qualityData != null) {
+            ArrayList<PartsData.ApparelInfoBean> parts = qualityData.getApparel_info();
+            if (parts.size() > 0) {
+                AppManager.getAppManager().finishActivity(CheckActivity.class);
+                AppConstant.QUALITY_NUMBER = qualityData.getNum();
+                AppConstant.QUALITY_CATEGORY = qualityData.getCategory();
+                CheckActivity.startActivity(mContext, parts);
+            } else {
+                ToastUtil.showShort("无对应的数据!");
+            }
+        }
+    }
+
+    //需要质检的数据(二维码)
+    @Override
+    public void returnGetQualityDataWithQRCode(PartsData qualityData) {
         displayCard.setText("");
         if (qualityData != null) {
             ArrayList<PartsData.ApparelInfoBean> parts = qualityData.getApparel_info();

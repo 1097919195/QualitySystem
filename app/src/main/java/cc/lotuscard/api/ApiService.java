@@ -114,10 +114,16 @@ public interface ApiService {
             @Field("password") String password
     );
 
-    //质检项目
+    //质检项目(卡号)
     @GET("api/client/get_clothes")
     Observable<HttpResponse<PartsData>> getQuality(
             @Query("c_num") String num
+    );
+
+    //质检项目(二维码)
+    @GET("api/client/get_clothes")
+    Observable<HttpResponse<PartsData>> getQualityWithQRCode(
+            @Query("c_qrcode_content") String QRCode
     );
 
     //质检样衣

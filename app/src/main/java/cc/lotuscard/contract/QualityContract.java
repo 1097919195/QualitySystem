@@ -24,6 +24,8 @@ public interface QualityContract {
     interface Model extends BaseModel {
         Observable<PartsData> getQualityData(String num);//质检项目
 
+        Observable<PartsData> getQualityDataWithQRCode(String QRCode);//质检项目
+
         Observable<HttpResponse<ArrayList<QualityData.Parts>>> getQualitySampleData(String id);//质检样衣
 
         Observable<ScanResult> getBleDeviceData();
@@ -34,6 +36,8 @@ public interface QualityContract {
     interface View extends BaseView {
         void returnGetQualityData(PartsData qualityData);
 
+        void returnGetQualityDataWithQRCode(PartsData qualityData);
+
         void returnGetQualitySampleData(HttpResponse<ArrayList<QualityData.Parts>> qualityData);
 
         void returnGetBleDeviceData(ScanResult scanResult);
@@ -43,6 +47,8 @@ public interface QualityContract {
 
     abstract class Presenter extends BasePresenter<View, Model> {
         public abstract void getQualityDataRequest(String num);
+
+        public abstract void getQualityDataRequestWithQRCode(String QRCode);
 
         public abstract void getQualitySampleDataRequest(String id);
 
