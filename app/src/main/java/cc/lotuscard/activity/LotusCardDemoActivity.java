@@ -339,7 +339,8 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                         if (result.contains("http")) {
 //                            mPresenter.getQualitySampleDataRequest("http://weixin.qq.com/q/0238AvlMIAdW210000g07m");
                             // fixme 以前有个样衣质检的接口
-                            mPresenter.getQualitySampleDataRequest(result);
+//                            mPresenter.getQualitySampleDataRequest(result);
+                            mPresenter.getQualityDataRequestWithQRCode(result);
                         }else {
                             mPresenter.getQualityDataRequestWithQRCode(result);
                         }
@@ -370,7 +371,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 case CODE_HINT:
                     if (result != null) {
                         if (requestCode == REQUEST_CODE_WECHATUSER) {
-                            mPresenter.getQualityDataRequestWithQRCode(result);
+                            mPresenter.getQualityDataRequest(result);
                         }
                     } else {
                         ToastUtil.showShort(getString(R.string.enter_qrcode_error));
