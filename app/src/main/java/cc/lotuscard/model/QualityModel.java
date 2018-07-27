@@ -50,6 +50,14 @@ public class QualityModel implements QualityContract.Model {
     private RxBleClient rxBleClient = AppApplication.getRxBleClient(AppApplication.getAppContext());
 
     @Override
+    public Observable<PartsData> getQualityDataWithCard(String num) {
+        return Api.getDefault(HostType.QUALITY_DATA_NEW)
+                .getQualityWithCard(num)
+                .map(new Api.HttpResponseFunc<>())
+                .compose(RxSchedulers.io_main());
+    }
+
+    @Override
     public Observable<PartsData> getQualityData(String num) {
         //api2
 //        return retrofit.create(ApiService.class)

@@ -240,13 +240,12 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
 //                            Object[][] result = {stringsGrivaty, stringsActValue};
 //                            LogUtils.loge("resultSave==" + result[0][0] + result[1][0]);
 //                            mPresenter.upLoadAfterCheckedRequest(result);
-
                             List<PartsData.ApparelInfoBean> data = (new MultipartBeanWithUserData(partses)).getParts();
                             MultipartBody.Part[] images = new MultipartBody.Part[imgTag.size()];
                             for (int i=0;i<imgTag.size();i++) {
                                 images[i] = getSpecialBodyTypePic(imgTag.get(i));
                             }
-                            mPresenter.upLoadQualityDataRequest("5b4dad389134ca3e8e7a2132",data, remark,images);
+                            mPresenter.upLoadQualityDataRequest(AppConstant.QUALITY_ID,data, remark,images);
                         } else {
                             ToastUtil.showShort("您还没有完成全部质检部位！");
                         }

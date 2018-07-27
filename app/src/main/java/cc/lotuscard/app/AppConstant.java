@@ -9,6 +9,7 @@ public class AppConstant {
     public static String QUALITY_NUMBER = "";
     public static String QUALITY_CARD = "";
     public static String QUALITY_CATEGORY = "";
+    public static String QUALITY_ID = "";
 
     public static final String SPEECH_APP_KEY = "hhzjkm3l5akcz5oiflyzmmmitzrhmsfd73lyl3y2";
     public static final String SPEECH_APP_SECRET = "29aa998c451d64d9334269546a4021b8";

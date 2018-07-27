@@ -116,6 +116,12 @@ public interface ApiService {
 
     //质检项目(卡号)
     @GET("api/client/get_clothes")
+    Observable<HttpResponse<PartsData>> getQualityWithCard(
+            @Query("card_num") String num
+    );
+
+    //质检项目(衣服编号)
+    @GET("api/client/get_clothes")
     Observable<HttpResponse<PartsData>> getQuality(
             @Query("c_num") String num
     );

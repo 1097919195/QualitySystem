@@ -28,8 +28,22 @@ import io.reactivex.functions.Consumer;
 
 public class QualityPresenter extends QualityContract.Presenter {
     @Override
-    public void getQualityDataRequest(String num) {
+    public void getQualityDataWithCardRequest(String num) {
+        mRxManage.add(mModel.getQualityDataWithCard(num).subscribeWith(new RxSubscriber<PartsData>(mContext, true) {
+            @Override
+            protected void _onNext(PartsData partsData) {
+                mView.returnGetQualityDataWithCard(partsData);
+            }
 
+            @Override
+            protected void _onError(String message) {
+                mView.showErrorTip(message);
+            }
+        }));
+    }
+
+    @Override
+    public void getQualityDataRequest(String num) {
         mRxManage.add(mModel.getQualityData(num)
                 .subscribeWith(new RxSubscriber<PartsData>(mContext, true) {
                     @Override
@@ -40,7 +54,6 @@ public class QualityPresenter extends QualityContract.Presenter {
                     @Override
                     protected void _onError(String message) {
                         mView.showErrorTip(message);
-
                     }
                 }));
     }
@@ -57,7 +70,6 @@ public class QualityPresenter extends QualityContract.Presenter {
                     @Override
                     protected void _onError(String message) {
                         mView.showErrorTip(message);
-
                     }
                 }));
     }

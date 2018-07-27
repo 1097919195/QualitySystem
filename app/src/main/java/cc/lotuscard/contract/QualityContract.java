@@ -22,6 +22,8 @@ import io.reactivex.Observable;
 
 public interface QualityContract {
     interface Model extends BaseModel {
+        Observable<PartsData> getQualityDataWithCard(String num);//质检项目
+
         Observable<PartsData> getQualityData(String num);//质检项目
 
         Observable<PartsData> getQualityDataWithQRCode(String QRCode);//质检项目
@@ -34,6 +36,8 @@ public interface QualityContract {
     }
 
     interface View extends BaseView {
+        void returnGetQualityDataWithCard(PartsData qualityData);
+
         void returnGetQualityData(PartsData qualityData);
 
         void returnGetQualityDataWithQRCode(PartsData qualityData);
@@ -46,6 +50,8 @@ public interface QualityContract {
     }
 
     abstract class Presenter extends BasePresenter<View, Model> {
+        public abstract void getQualityDataWithCardRequest(String num);
+
         public abstract void getQualityDataRequest(String num);
 
         public abstract void getQualityDataRequestWithQRCode(String QRCode);

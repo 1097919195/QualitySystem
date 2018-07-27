@@ -290,7 +290,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
     private void initListener() {
         findViewById(R.id.btnClearLog).setOnClickListener(v -> {
-            mPresenter.getQualityDataRequest("826168449");
+            mPresenter.getQualityDataRequest("1");
             if (null != displayCard) {
                 displayCard.setText("");
             }
@@ -427,7 +427,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                     String strDate = formatter.format(curDate);
                     displayCard.setText(msg.obj.toString() + "  (" + strDate + ")");
                     AppConstant.QUALITY_CARD = msg.obj.toString();
-                    mPresenter.getQualityDataRequest(AppConstant.QUALITY_CARD);
+                    mPresenter.getQualityDataWithCardRequest(AppConstant.QUALITY_CARD);
                     flag = false;
                 }
             }
@@ -648,6 +648,24 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
 
     //需要质检的数据(刷卡)
     @Override
+    public void returnGetQualityDataWithCard(PartsData qualityData) {
+        displayCard.setText("");
+        if (qualityData != null) {
+            ArrayList<PartsData.ApparelInfoBean> parts = qualityData.getApparel_info();
+            if (parts.size() > 0) {
+                AppManager.getAppManager().finishActivity(CheckActivity.class);
+                AppConstant.QUALITY_NUMBER = qualityData.getNum();
+                AppConstant.QUALITY_CATEGORY = qualityData.getCategory();
+                AppConstant.QUALITY_ID = qualityData.get_id();
+                CheckActivity.startActivity(mContext, parts);
+            } else {
+                ToastUtil.showShort("无对应的数据!");
+            }
+        }
+    }
+
+    //需要质检的数据(衣服编号)
+    @Override
     public void returnGetQualityData(PartsData qualityData) {
         displayCard.setText("");
         if (qualityData != null) {
@@ -656,6 +674,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 AppManager.getAppManager().finishActivity(CheckActivity.class);
                 AppConstant.QUALITY_NUMBER = qualityData.getNum();
                 AppConstant.QUALITY_CATEGORY = qualityData.getCategory();
+                AppConstant.QUALITY_ID = qualityData.get_id();
                 CheckActivity.startActivity(mContext, parts);
             } else {
                 ToastUtil.showShort("无对应的数据!");
@@ -673,6 +692,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 AppManager.getAppManager().finishActivity(CheckActivity.class);
                 AppConstant.QUALITY_NUMBER = qualityData.getNum();
                 AppConstant.QUALITY_CATEGORY = qualityData.getCategory();
+                AppConstant.QUALITY_ID = qualityData.get_id();
                 CheckActivity.startActivity(mContext, parts);
             } else {
                 ToastUtil.showShort("无对应的数据!");
@@ -680,7 +700,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
         }
     }
 
-    // fixme 以前需要的一块质检，新的带看
+    // fixme 以前需要的一块质检，新的待看
     @Override
     public void returnGetQualitySampleData(HttpResponse<ArrayList<QualityData.Parts>> qualityData) {
 //        if (qualityData.getStatus() == 200) {
