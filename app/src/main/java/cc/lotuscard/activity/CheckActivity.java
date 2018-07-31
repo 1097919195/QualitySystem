@@ -667,7 +667,8 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     protected void onDestroy() {
         super.onDestroy();
         if (speechSynthesizer != null) {
-            speechSynthesizer = null;
+            speechSynthesizer.stop();
         }
+
     }
 }
