@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alibaba.fastjson.JSONObject;
 import com.aspsine.irecyclerview.IRecyclerView;
+import com.aspsine.irecyclerview.animation.ScaleInAnimation;
 import com.aspsine.irecyclerview.universaladapter.ViewHolderHelper;
 import com.aspsine.irecyclerview.universaladapter.recyclerview.CommonRecycleViewAdapter;
 import com.aspsine.irecyclerview.universaladapter.recyclerview.OnItemClickListener;
@@ -281,7 +282,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
      */
     private MultipartBody.Part getSpecialBodyTypePic(String filename) {
         File f = new File(PATH + File.separator + AppConstant.FILE_PROVIDER_NAME + File.separator + filename + JPG_SUFFIX);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);//创建RequestBody，其中`multipart/form-data`为编码类型
         return MultipartBody.Part.createFormData("images[]", filename, requestFile);
     }
 
@@ -428,6 +429,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
         irc.setAdapter(adapter);
 //        irc.setLayoutManager(new LinearLayoutManager(this));
         irc.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
+        adapter.closeLoadAnimation();
     }
 
     private void initMeasure() {
