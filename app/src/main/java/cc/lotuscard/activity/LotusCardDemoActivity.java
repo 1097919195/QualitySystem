@@ -659,7 +659,8 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 AppConstant.QUALITY_ID = qualityData.get_id();
                 CheckActivity.startActivity(mContext, parts);
             } else {
-                ToastUtil.showShort("无对应的数据!");
+                flag = true;
+                ToastUtil.showShort("该样衣无质检的数据!");
             }
         }
     }
@@ -677,7 +678,8 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 AppConstant.QUALITY_ID = qualityData.get_id();
                 CheckActivity.startActivity(mContext, parts);
             } else {
-                ToastUtil.showShort("无对应的数据!");
+                flag = true;
+                ToastUtil.showShort("该样衣无质检的数据!");
             }
         }
     }
@@ -695,7 +697,8 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
                 AppConstant.QUALITY_ID = qualityData.get_id();
                 CheckActivity.startActivity(mContext, parts);
             } else {
-                ToastUtil.showShort("无对应的数据!");
+                flag = true;
+                ToastUtil.showShort("该样衣无质检的数据!");
             }
         }
     }
