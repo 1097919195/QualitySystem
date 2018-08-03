@@ -483,10 +483,15 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     //蓝牙测量结果处理
     @Override
     public void returnStartMeasure(Float length, Float angle, int battery) {
-        ToastUtil.showShort(String.valueOf(length) + "==" + String.valueOf(angle) + "==" + String.valueOf(battery));
-
         measurelength = length;
-        deBattery.setText(battery + "%");
+        if (battery > 20) {
+            deBattery.setTextColor(getResources().getColor(R.color.primary));
+            deBattery.setText(battery + "%");
+        }else {
+            deBattery.setTextColor(getResources().getColor(R.color.red));
+            deBattery.setText(battery + "%" + "请记得及时充电");
+        }
+
 
         //测量指定部位
         if (remuasure) {
