@@ -390,7 +390,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
                 TextView currect = helper.getView(R.id.currect);
 
                 gravity.setText(parts.getName());
-                primary.setText(String.valueOf(parts.getValue()));
+                primary.setText(parts.getValue());
                 currect.setText(String.valueOf(parts.getActValue()));
 
                 currect.setTextColor(getResources().getColor(R.color.battery_color));

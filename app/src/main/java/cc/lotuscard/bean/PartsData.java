@@ -95,7 +95,7 @@ public class PartsData implements Parcelable {
          */
 
         private String name;
-        private int value;
+        private String value;
         private float actValue;
         private boolean isSelected;
 
@@ -123,11 +123,11 @@ public class PartsData implements Parcelable {
             this.name = name;
         }
 
-        public int getValue() {
+        public String getValue() {
             return value;
         }
 
-        public void setValue(int value) {
+        public void setValue(String value) {
             this.value = value;
         }
 
@@ -142,14 +142,14 @@ public class PartsData implements Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.name);
-            dest.writeInt(this.value);
+            dest.writeString(this.value);
             dest.writeFloat(this.actValue);
             dest.writeByte(this.isSelected ? (byte) 1 : (byte) 0);
         }
 
         protected ApparelInfoBean(Parcel in) {
             this.name = in.readString();
-            this.value = in.readInt();
+            this.value = in.readString();
             this.actValue = in.readFloat();
             this.isSelected = in.readByte() != 0;
         }

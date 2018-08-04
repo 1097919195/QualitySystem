@@ -141,8 +141,8 @@
     <string name="logout_success">退出登录成功</string>
     <string name="unconnected">蓝牙未连接</string>
     <string name="connected">蓝牙已连接</string>
-    <string name="enter_qrcode_prompt">请输入二维码编号</string>
-    <string name="valid_qrcode_prompt">请确认您输入的二维码编号是正确的</string>
+    <string name="enter_qrcode_prompt">请输入样衣编号</string>
+    <string name="valid_qrcode_prompt">请确认您输入的样衣编号是否正确</string>
     <string name="btn_sure">确认</string>
     <string name="plz_enter_qrcode">请输入二维码</string>
     <string name="preferences_actions_title">扫描成功</string>
