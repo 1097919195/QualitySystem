@@ -8,47 +8,73 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <include layout="@layout/include_basic_situation" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatTextView
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/c999" />
+
+            <TextView
                 android:textSize="@dimen/font_large"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/linelayout"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="质检部位"
                 android:textAlignment="center"
                 android:textColor="@color/primary" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/c999" />
+
+            <TextView
                 android:textSize="@dimen/font_large"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/linelayout"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="质检数据"
                 android:textAlignment="center"
                 android:textColor="@color/primary" />
-            <android.support.v7.widget.AppCompatTextView
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/c999" />
+
+            <TextView
                 android:textSize="@dimen/font_large"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/linelayout"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="当前测量"
                 android:textAlignment="center"
                 android:textColor="#ef371f" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/c999" />
         </LinearLayout>
 
         <com.aspsine.irecyclerview.IRecyclerView
@@ -61,15 +87,5 @@
         </com.aspsine.irecyclerview.IRecyclerView>
 
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:orientation="vertical">
-        <include layout="@layout/include_basic_situation" />
-    </LinearLayout>
-
-
-
 
 </LinearLayout>

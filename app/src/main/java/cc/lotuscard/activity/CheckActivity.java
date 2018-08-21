@@ -11,7 +11,9 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -151,6 +153,7 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
     @Override
     public void initView() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);//底部导航栏覆盖activity
         initSpeech();
         irc = (IRecyclerView) findViewById(R.id.irc_quality_data);
         deBattery = (TextView) findViewById(R.id.de_battery);
@@ -426,6 +429,14 @@ public class CheckActivity extends BaseActivity<CheckPresenter, CheckModel> impl
 //            }
 //        });
 //        irc.addFooterView(view);
+
+        //默认分割线
+//        irc.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        //添加自定义分割线
+        DividerItemDecoration divider = new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);//这里导入的包和自己封装的库不同
+        divider.setDrawable(ContextCompat.getDrawable(this,R.drawable.custom_divider));
+        irc.addItemDecoration(divider);
+
         irc.setAdapter(adapter);
 //        irc.setLayoutManager(new LinearLayoutManager(this));
         irc.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));

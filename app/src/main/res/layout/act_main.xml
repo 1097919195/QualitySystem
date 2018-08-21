@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,152 +18,159 @@
             <ImageView
                 android:layout_gravity="center"
                 android:id="@+id/company_logo"
-                android:layout_width="450dp"
-                android:layout_height="450dp"
-                android:background="@mipmap/company_logo" />
+                android:scaleType="centerCrop"
+                android:layout_width="850dp"
+                android:layout_height="850dp"
+                android:background="@mipmap/big_blue_logo" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_gravity="center"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <TextView
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textColor="@color/c333"
-                android:textSize="40sp" />
-
+            >
             <LinearLayout
-                android:layout_marginTop="-100dp"
-                android:layout_marginLeft="90dp"
+                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:gravity="center"
-                android:orientation="vertical">
-
-                <LinearLayout
+                >
+                <TextView
+                    android:layout_marginLeft="90dp"
+                    android:layout_marginTop="60dp"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textColor="@color/c333"
+                    android:textSize="70sp" />
+                <LinearLayout
+                    android:layout_marginTop="-100dp"
+                    android:layout_marginLeft="90dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="绑定设备："
-                        android:textColor="@color/c333"
-                        android:textSize="@dimen/font_large" />
-
-                    <ImageView
-                        android:id="@+id/bleState"
-                        android:layout_width="50dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:background="@drawable/ble_disconnected" />
-                </LinearLayout>
+                        android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:orientation="horizontal">
+                        <TextView
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="绑定设备："
+                            android:textColor="@color/c333"
+                            android:textSize="@dimen/font_large" />
 
-                    <TextView
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="读卡设备："
-                        android:textColor="@color/c333"
-                        android:textSize="@dimen/font_large" />
+                        <ImageView
+                            android:id="@+id/bleState"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/ble_disconnected" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:layout_gravity="center"
-                        android:id="@+id/tvDeviceNode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/c333"
-                        android:text="无设备"
-                        android:textSize="@dimen/font_large" />
-                </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp">
+                        <TextView
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="读卡设备："
+                            android:textColor="@color/c333"
+                            android:textSize="@dimen/font_large" />
 
-                    <TextView
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_gravity="center"
+                            android:id="@+id/tvDeviceNode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/c333"
+                            android:text="无设备"
+                            android:textSize="@dimen/font_large" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/font_large"
+                            android:textColor="@color/c333"
+                            android:text="获取卡号：" />
+
+                        <TextView
+                            android:layout_gravity="center"
+                            android:id="@+id/displayCard"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/c333"
+                            android:textSize="@dimen/font_large" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/displayCode"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/font_large"
-                        android:textColor="@color/c333"
-                        android:text="获取卡号：" />
+                        android:hint="码枪内容显示">
 
-                    <TextView
-                        android:layout_gravity="center"
-                        android:id="@+id/displayCard"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/c333"
-                        android:textSize="@dimen/font_large" />
+                        <requestFocus />
+                    </EditText>
+
                 </LinearLayout>
-
-                <EditText
-                    android:id="@+id/displayCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:hint="码枪内容显示">
-
-                    <requestFocus />
-                </EditText>
-
             </LinearLayout>
-        </LinearLayout>
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_marginBottom="80dp"
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:layout_marginRight="70dp"
+                    android:id="@+id/scanTwoCode"
+                    android:layout_width="140dp"
+                    android:layout_height="60dp"
+                    android:text="质检"
+                    android:background="@drawable/btn_usual"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+
+                <Button
+                    android:id="@+id/btnClearLog"
+                    android:layout_width="140dp"
+                    android:layout_height="60dp"
+                    android:text="演示"
+                    android:background="@drawable/btn_usual"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/btnCodeTrun"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:text="码枪"
+                    android:background="@drawable/btn_usual"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_large" />
+            </LinearLayout>
+        </RelativeLayout>
+
     </LinearLayout>
 
 
-    <Button
-        android:layout_marginRight="50dp"
-        android:layout_toLeftOf="@id/btnClearLog"
-        android:layout_marginBottom="60dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/scanTwoCode"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="质检"
-        android:background="@drawable/btn_usual"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_large" />
 
-    <Button
-        android:layout_marginBottom="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/btnClearLog"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="演示"
-        android:background="@drawable/btn_usual"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_large" />
 
-    <Button
-        android:visibility="gone"
-        android:layout_toLeftOf="@+id/scanTwoCode"
-        android:layout_marginBottom="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/btnCodeTrun"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="码枪"
-        android:background="@drawable/btn_usual"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_large" />
 
 </RelativeLayout>
