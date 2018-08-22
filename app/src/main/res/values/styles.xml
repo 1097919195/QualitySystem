@@ -19,4 +19,13 @@
         <item name="colorControlActivated">@color/gray</item>
     </style>
 
+
+    <style name="Anim_style" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/ActivityAnimFade</item>
+    </style>
+
+    <style name="ActivityAnimFade" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/splash_anim_in</item>
+    </style>
+
 </resources>

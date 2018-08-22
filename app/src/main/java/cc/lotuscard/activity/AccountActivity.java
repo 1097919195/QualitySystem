@@ -21,13 +21,9 @@ import com.jaydenxiao.common.commonutils.PermissionUtils;
 import com.jaydenxiao.common.commonutils.SPUtils;
 import com.jaydenxiao.common.commonutils.ToastUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import butterknife.BindView;
 import cc.lotuscard.app.AppApplication;
 import cc.lotuscard.app.AppConstant;
-import cc.lotuscard.bean.HttpResponse;
 import cc.lotuscard.bean.LoginTokenData;
 import cc.lotuscard.contract.AccountContract;
 import cc.lotuscard.identificationcardtest.R;
@@ -66,7 +62,7 @@ public class AccountActivity extends BaseActivity<AccountPresenter,AccountModel>
     public static void startAction(Activity activity) {
         Intent intent = new Intent(activity, AccountActivity.class);
         activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+        activity.overridePendingTransition(R.anim.splash_anim_in,R.anim.splash_anim_out);
     }
 
     @Override
