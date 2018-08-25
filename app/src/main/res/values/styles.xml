@@ -20,12 +20,25 @@
     </style>
 
 
-    <style name="Anim_style" parent="AppTheme">
+    //冷启动
+    <style name="AppWelcome" parent="android:Theme.Translucent.NoTitleBar.Fullscreen"/>//背景透明
+    <style name="AppWelcome.wall" parent="AppTheme">//有背景有沉浸状态栏
+        <item name="android:windowBackground">@mipmap/logo_blue</item>
+    </style>
+    <style name="AppWelcome.wallpaper" parent="AppTheme">//有背景无沉浸状态栏
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@mipmap/company_logo</item>
+    </style>
+
+
+    //初始化动画
+    <style name="Anim_style" parent="AppWelcome.wallpaper">
         <item name="android:windowAnimationStyle">@style/ActivityAnimFade</item>
     </style>
 
     <style name="ActivityAnimFade" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/splash_anim_in</item>
     </style>
+    <!--<item name="android:windowEnterAnimation">@anim/windows_anim_in</item>-->
 
 </resources>

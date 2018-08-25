@@ -55,7 +55,7 @@ public class AccountActivity extends BaseActivity<AccountPresenter,AccountModel>
     SharedPreferences sp = AppApplication.getAppContext().getSharedPreferences("share", MODE_PRIVATE);
     SharedPreferences.Editor editor = sp.edit();
     boolean isFirstRun = sp.getBoolean("isFirstRun", true);
-    String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.CAMERA ,Manifest.permission.RECORD_AUDIO};
+    String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.CAMERA ,Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_PHONE_STATE};
     public static int permissionCode = 1;
 
 
@@ -79,7 +79,7 @@ public class AccountActivity extends BaseActivity<AccountPresenter,AccountModel>
     public void initView() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);//底部导航栏覆盖activity
-//        initPermission();
+        initPermission();
         initUserInfo();
         initListener();
     }
@@ -174,8 +174,8 @@ public class AccountActivity extends BaseActivity<AccountPresenter,AccountModel>
         SPUtils.setSharedStringData(AppApplication.getAppContext(), AppConstant.TOKEN, tokenData.getToken_type() + tokenData.getAccess_token());
         LogUtils.loge(tokenData.getAccess_token());
         ToastUtil.showShort("登录成功！");
-        finish();
         LotusCardDemoActivity.startAction(AccountActivity.this);
+        finish();
     }
 
     @Override

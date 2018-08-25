@@ -122,7 +122,6 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     public static void startAction(Activity activity) {
         Intent intent = new Intent(activity, LotusCardDemoActivity.class);
         activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     @Override
