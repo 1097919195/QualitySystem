@@ -27,7 +27,7 @@
     </style>
     <style name="AppWelcome.wallpaper" parent="AppTheme">//有背景无沉浸状态栏
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@mipmap/company_logo</item>
+        <item name="android:windowBackground">@mipmap/company_logo2</item>
     </style>
 
 
