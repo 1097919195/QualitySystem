@@ -208,6 +208,7 @@
                 android:layout_width="390dp"
                 android:layout_height="50dp"
                 android:background="@drawable/btn_login"
+                android:foreground="?selectableItemBackground"
                 android:text="登   录"
                 android:textColor="@color/red"
                 android:textSize="@dimen/item_text_size_20"/>
