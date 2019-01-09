@@ -53,6 +53,7 @@ public class QualityPresenter extends QualityContract.Presenter {
 
                     @Override
                     protected void _onError(String message) {
+                        mView.showErrorTip("clear_editText");
                         mView.showErrorTip(message);
                     }
                 }));

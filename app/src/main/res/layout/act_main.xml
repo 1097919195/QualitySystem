@@ -121,7 +121,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/font_large"
-                        android:hint="码枪内容显示">
+                        android:hint="码枪扫描一维码"
+                        android:singleLine="true">
 
                         <requestFocus />
                     </EditText>

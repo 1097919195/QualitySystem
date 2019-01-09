@@ -667,7 +667,7 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     //需要质检的数据(衣服编号)
     @Override
     public void returnGetQualityData(PartsData qualityData) {
-        displayCard.setText("");
+        displayCode.setText("");
         if (qualityData != null) {
             ArrayList<PartsData.ApparelInfoBean> parts = qualityData.getApparel_info();
             if (parts.size() > 0) {
@@ -895,6 +895,9 @@ public class LotusCardDemoActivity extends BaseActivity<QualityPresenter,Quality
     @Override
     public void showErrorTip(String msg) {
         flag = true;
+        if (msg == "clear_editText") {
+            displayCode.setText("");
+        }
         if (msg == "token过期") {
             SPUtils.setSharedStringData(AppApplication.getAppContext(),AppConstant.TOKEN,"");
             AppManager.getAppManager().finishAllActivity();
